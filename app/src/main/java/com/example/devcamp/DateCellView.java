@@ -11,9 +11,6 @@ import sun.bob.mcalendarview.MarkStyleExp;
 import sun.bob.mcalendarview.views.BaseCellView;
 import sun.bob.mcalendarview.vo.DayData;
 
-/**
- * Created by bob.sun on 15/8/30.
- */
 public class DateCellView extends BaseCellView {
     TextView textView;
     private AbsListView.LayoutParams matchParentParams;
