@@ -34,7 +34,7 @@
                         android:layout_height="@dimen/dialog_icon_size"
                         android:id="@+id/cleanSettingBtn"
                         android:layout_gravity="left|center"
-                        android:src="@mipmap/icon_check_list"/>
+                        android:src="@mipmap/icon_clean_very_good"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -132,7 +132,7 @@
                         android:layout_height="@dimen/dialog_icon_size"
                         android:layout_gravity="left|center"
                         android:id="@+id/skinSettingBtn"
-                        android:src="@mipmap/icon_check_list"/>
+                        android:src="@mipmap/icon_clean_very_good"/>
 
                     <TextView
                         android:layout_width="wrap_content"

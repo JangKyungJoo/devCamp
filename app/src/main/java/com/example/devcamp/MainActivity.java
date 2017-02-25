@@ -15,10 +15,13 @@ import android.widget.Toast;
 import com.example.devcamp.util.User;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
+import sun.bob.mcalendarview.listeners.OnDateClickListener;
 import sun.bob.mcalendarview.listeners.OnExpDateClickListener;
 import sun.bob.mcalendarview.listeners.OnMonthScrollListener;
 import sun.bob.mcalendarview.views.ExpCalendarView;
+import sun.bob.mcalendarview.vo.DateData;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,8 +31,11 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout cleansingLayout, clean1, clean2, clean3, clean4;
     LinearLayout skinLayout, skin1, skin2, skin3, skin4;
     CheckBox cbox1, cbox2, cbox3, cbox4, sbox1, sbox2, sbox3, sbox4;
-    ImageView cleanSetBtn, skinSetBtn;
+    ImageView cleanSettingBtn, skinSettingBtn;
     Dialog mMainDialog;
+    String nowDate;
+    DateData todayDate;
+    public static int currentYear, currentMonth, currentDay, tempMonth;
 
 
     @Override
@@ -42,20 +48,28 @@ public class MainActivity extends AppCompatActivity {
         settingBtn = (FrameLayout) findViewById(R.id.settingBtn);
         guideBtn = (FrameLayout) findViewById(R.id.guideBtn);
         reportBtn = (FrameLayout) findViewById(R.id.reportBtn);
-
-        mMainDialog = createDialog();
-
-        //YearMonthTv.setText(Calendar.getInstance().get(Calendar.YEAR) + "年" + (Calendar.getInstance().get(Calendar.MONTH) + 1) + "月");
+        setCurrentDate();
 
         expCalendarView.setOnDateClickListener(new OnExpDateClickListener()).setOnMonthScrollListener(new OnMonthScrollListener() {
             @Override
             public void onMonthChange(int year, int month) {
-                YearMonthTv.setText(String.format("%d年%d月", year, month));
+                YearMonthTv.setText(String.format("%d月", month));
+                tempMonth = month;
             }
 
             @Override
             public void onMonthScroll(float positionOffset) {
 //                Log.i("listener", "onMonthScroll:" + positionOffset);
+            }
+        });
+
+        expCalendarView.setOnDateClickListener(new OnDateClickListener() {
+            @Override
+            public void onDateClick(View view, DateData date) {
+                if(User.hasData(getApplicationContext(), date.getYear()+"."+date.getMonth()+"."+date.getDay())) {
+                    mMainDialog = createDialog(date.getYear() + "." + date.getMonth() + "." + date.getDay());
+                    mMainDialog.show();
+                }
             }
         });
 
@@ -76,17 +90,14 @@ public class MainActivity extends AppCompatActivity {
         reportBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Toast.makeText(getApplicationContext(), "report", Toast.LENGTH_SHORT).show();
-                mMainDialog.show();
+                Toast.makeText(getApplicationContext(), "report", Toast.LENGTH_SHORT).show();
             }
         });
 
         expCalendarView.setDateCell(R.layout.layout_date_cell);
-        expCalendarView.markDate(2016, 10, 16);
-
     }
 
-    private AlertDialog createDialog() {
+    private AlertDialog createDialog(String date) {
         final View innerView = getLayoutInflater().inflate(R.layout.layout_checklist_dialog, null);
         AlertDialog.Builder ab = new AlertDialog.Builder(this);
         ab.setView(innerView);
@@ -113,16 +124,16 @@ public class MainActivity extends AppCompatActivity {
         sbox3 = (CheckBox) innerView.findViewById(R.id.skinbox_3);
         sbox4 = (CheckBox) innerView.findViewById(R.id.skinbox_4);
 
-        cleanSetBtn = (ImageView) innerView.findViewById(R.id.cleanSettingBtn);
-        cleanSetBtn.setOnClickListener(new View.OnClickListener() {
+        cleanSettingBtn = (ImageView) innerView.findViewById(R.id.cleanSettingBtn);
+        cleanSettingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getApplicationContext(), "move to setting", Toast.LENGTH_SHORT).show();
             }
         });
 
-        skinSetBtn = (ImageView) innerView.findViewById(R.id.skinSettingBtn);
-        skinSetBtn.setOnClickListener(new View.OnClickListener() {
+        skinSettingBtn = (ImageView) innerView.findViewById(R.id.skinSettingBtn);
+        skinSettingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getApplicationContext(), "move to setting", Toast.LENGTH_SHORT).show();
@@ -138,8 +149,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        loadCleansingData(innerView);
-        loadSkincareDate(innerView);
+        loadCleansingData(innerView, date);
+        loadSkincareData(innerView, date);
 
         saveBtn.requestFocus();
         return  ab.create();
@@ -151,22 +162,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void saveData(){
-        ArrayList<User> cleansing = User.load(getApplicationContext(), User.CLEANSING_NAME);
-        ArrayList<User> skin = User.load(getApplicationContext(), User.SKINCARE_NAME);
+        ArrayList<User> cleansing = User.load(getApplicationContext(), nowDate, User.CLEANSING_NAME);
+        ArrayList<User> skin = User.load(getApplicationContext(), nowDate, User.SKINCARE_NAME);
+        int count = 0;
         if(cleansing.size() > 0){
             for (int i = 0; i < cleansing.size(); i++) {
                 switch (i){
                     case 0:
-                        User.saveItemCheck(getApplicationContext(), User.CLEANSING_CHECK, ""+i, cbox1.isChecked());
+                        User.saveItemCheck(getApplicationContext(), nowDate + "_" + User.CLEANSING_CHECK, ""+i, cbox1.isChecked());
+                        if(cbox1.isChecked())   count++;
                         break;
                     case 1:
-                        User.saveItemCheck(getApplicationContext(), User.CLEANSING_CHECK, ""+i, cbox2.isChecked());
+                        User.saveItemCheck(getApplicationContext(), nowDate + "_" + User.CLEANSING_CHECK, ""+i, cbox2.isChecked());
+                        if(cbox2.isChecked())   count++;
                         break;
                     case 2:
-                        User.saveItemCheck(getApplicationContext(), User.CLEANSING_CHECK, ""+i, cbox3.isChecked());
+                        User.saveItemCheck(getApplicationContext(), nowDate + "_" + User.CLEANSING_CHECK, ""+i, cbox3.isChecked());
+                        if(cbox3.isChecked())   count++;
                         break;
                     case 3:
-                        User.saveItemCheck(getApplicationContext(), User.CLEANSING_CHECK, ""+i, cbox4.isChecked());
+                        User.saveItemCheck(getApplicationContext(), nowDate + "_" + User.CLEANSING_CHECK, ""+i, cbox4.isChecked());
+                        if(cbox4.isChecked())   count++;
                         break;
                     default:
                         break;
@@ -177,26 +193,31 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < skin.size(); i++) {
                 switch (i){
                     case 0:
-                        User.saveItemCheck(getApplicationContext(), User.SKINCARE_CHECK, ""+i, sbox1.isChecked());
+                        User.saveItemCheck(getApplicationContext(), nowDate + "_" + User.SKINCARE_CHECK, ""+i, sbox1.isChecked());
+                        if(sbox1.isChecked())   count++;
                         break;
                     case 1:
-                        User.saveItemCheck(getApplicationContext(), User.SKINCARE_CHECK, ""+i, sbox2.isChecked());
+                        User.saveItemCheck(getApplicationContext(), nowDate + "_" + User.SKINCARE_CHECK, ""+i, sbox2.isChecked());
+                        if(sbox2.isChecked())   count++;
                         break;
                     case 2:
-                        User.saveItemCheck(getApplicationContext(), User.SKINCARE_CHECK, ""+i, sbox3.isChecked());
+                        User.saveItemCheck(getApplicationContext(), nowDate + "_" + User.SKINCARE_CHECK, ""+i, sbox3.isChecked());
+                        if(sbox3.isChecked())   count++;
                         break;
                     case 3:
-                        User.saveItemCheck(getApplicationContext(), User.SKINCARE_CHECK, ""+i, sbox4.isChecked());
+                        User.saveItemCheck(getApplicationContext(), nowDate + "_" + User.SKINCARE_CHECK, ""+i, sbox4.isChecked());
+                        if(sbox4.isChecked())   count++;
                         break;
                     default:
                         break;
                 }
             }
         }
+        saveUserData(count, cleansing.size(), skin.size());
     }
 
-    public void loadCleansingData(View innerView){
-        ArrayList<User> cleansing = User.load(getApplicationContext(), User.CLEANSING_NAME);
+    public void loadCleansingData(View innerView, String date){
+        ArrayList<User> cleansing = User.load(getApplicationContext(), date, User.CLEANSING_NAME);
         if(cleansing.size() > 0) {
             cleansingLayout.setVisibility(View.VISIBLE);
             for (int i = 0; i < cleansing.size(); i++) {
@@ -227,8 +248,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void loadSkincareDate(View innerView){
-        ArrayList<User> skincare = User.load(getApplicationContext(), User.SKINCARE_NAME);
+    public void loadSkincareData(View innerView, String date){
+        ArrayList<User> skincare = User.load(getApplicationContext(), date, User.SKINCARE_NAME);
         if(skincare.size() > 0) {
             skinLayout.setVisibility(View.VISIBLE);
             for (int i = 0; i < skincare.size(); i++) {
@@ -258,5 +279,27 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    public void setCurrentDate(){
+        Calendar c = Calendar.getInstance();
+        currentYear = c.get(Calendar.YEAR);
+        currentMonth = c.get(Calendar.MONTH) + 1;
+        currentDay = c.get(Calendar.DAY_OF_MONTH);
+        YearMonthTv.setText(String.format("%d月", currentMonth));
+        nowDate = currentYear+"."+currentMonth+"."+currentDay;
+        tempMonth = currentMonth;
+    }
+
+    public void saveUserData(int count, int cSize, int sSize){
+        if(count == 0) {
+            User.saveCheckList(getApplicationContext(), nowDate, User.BAD);
+        }else if(count == cSize + sSize){
+            // very good
+            User.saveCheckList(getApplicationContext(), nowDate, User.VERY_GOOD);
+        }else{
+            User.saveCheckList(getApplicationContext(), nowDate, User.GOOD);
+        }
+    }
+
 }
 
