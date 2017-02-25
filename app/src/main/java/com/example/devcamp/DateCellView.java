@@ -27,19 +27,13 @@ public class DateCellView extends BaseCellView {
 
     @Override
     public void setDisplayText(DayData day) {
-        //textView.setText(day.getText());
         ((TextView) this.findViewById(R.id.id_cell_text)).setText(day.getText());
     }
 
     private void initLayout() {
-        matchParentParams = new AbsListView.LayoutParams((int) CellConfig.cellWidth, (int) CellConfig.cellHeight);
+        matchParentParams = new AbsListView.LayoutParams((int) CellConfig.cellWidth, (int) (CellConfig.cellHeight * 1.5) );
         this.setLayoutParams(matchParentParams);
         this.setOrientation(VERTICAL);
-        /*
-        textView = (TextView) findViewById(R.id.id_cell_text);
-        textView.setGravity(Gravity.CENTER);
-        textView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, (float) 1.0));
-        this.addView(textView);*/
     }
 
     @Override

@@ -2,4 +2,9 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="icon_circle">35dp</dimen>
+    <dimen name="month_circle">45dp</dimen>
+    <dimen name="date_width">200dp</dimen>
+    <dimen name="date_height">400dp</dimen>
+    <dimen name="icon_circle_margin">4dp</dimen>
 </resources>

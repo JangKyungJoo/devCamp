@@ -6,21 +6,80 @@
     android:background="#f0f0f0"
     tools:context="com.example.devcamp.MainActivity">
 
-
-    <TextView
-        android:id="@+id/main_YYMM_Tv"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:padding="10dp"
-        android:textColor="#fff"
-        android:background="#A777BE"
-        android:text="----年-月" />
+        android:background="@color/colorPrimary"
+        android:padding="8dp">
+
+        <FrameLayout
+            android:layout_width="@dimen/month_circle"
+            android:layout_height="@dimen/month_circle"
+            android:layout_marginLeft="@dimen/icon_circle_margin"
+            android:background="@drawable/shape_circle">
+
+            <TextView
+                android:id="@+id/main_YYMM_Tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textColor="#fff"
+                android:text="7"
+                android:textStyle="bold"
+                android:layout_gravity="center" />
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="right|center">
+
+            <FrameLayout
+                android:layout_width="@dimen/icon_circle"
+                android:layout_height="@dimen/icon_circle"
+                android:layout_marginRight="@dimen/icon_circle_margin"
+                android:id="@+id/checkBtn"
+                android:background="@drawable/shape_circle">
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="@dimen/icon_circle"
+                android:layout_height="@dimen/icon_circle"
+                android:layout_marginRight="@dimen/icon_circle_margin"
+                android:id="@+id/reportBtn"
+                android:background="@drawable/shape_circle">
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="@dimen/icon_circle"
+                android:layout_height="@dimen/icon_circle"
+                android:layout_marginRight="@dimen/icon_circle_margin"
+                android:id="@+id/guideBtn"
+                android:background="@drawable/shape_circle">
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="@dimen/icon_circle"
+                android:layout_height="@dimen/icon_circle"
+                android:layout_marginRight="@dimen/icon_circle_margin"
+                android:id="@+id/settingBtn"
+                android:background="@drawable/shape_circle">
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </FrameLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="#ccc" />
+        android:background="#d7d7d7" />
 
     <sun.bob.mcalendarview.views.WeekColumnView
         android:layout_width="match_parent"
@@ -30,13 +89,13 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="#ccc" />
+        android:layout_height="2px"
+        android:background="#d7d7d7" />
 
     <sun.bob.mcalendarview.views.ExpCalendarView
         android:id="@+id/calendar_exp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="1000dp"
         tools:context=".MainActivity" />
 
 </LinearLayout>
