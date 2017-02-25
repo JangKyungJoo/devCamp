@@ -38,22 +38,21 @@ public class DateCellView extends BaseCellView {
 
     @Override
     public void setDisplayText(DayData day) {
-        Log.d("TEST", "display text");
         setDate(day);
         ((TextView) this.findViewById(R.id.id_cell_text)).setText(day.getText());
         getResult();
-
+/*
         if(nMonth == MainActivity.nowMonth){
             ((TextView) this.findViewById(R.id.id_cell_text)).setTextColor(Color.BLACK);
         }else if(nMonth == MainActivity.nowMonth + 1 || nMonth == MainActivity.nowMonth - 1){
             ((TextView) this.findViewById(R.id.id_cell_text)).setTextColor(Color.DKGRAY);
         }else{
             ((TextView) this.findViewById(R.id.id_cell_text)).setTextColor(Color.DKGRAY);
-        }
-/*
+        }*/
+
         if(isThisMonth())
             ((TextView) this.findViewById(R.id.id_cell_text)).setTextColor(Color.BLACK);
-        else
+/*        else
             ((TextView) this.findViewById(R.id.id_cell_text)).setTextColor(Color.DKGRAY);
 */
         if(isToday())
@@ -79,15 +78,13 @@ public class DateCellView extends BaseCellView {
 
     public boolean isThisMonth(){
         Log.d("TESTTEST", "nMonth : " + nMonth + ", cMonth : " + cMonth + ", nowMonth" + MainActivity.nowMonth);
-        /*
         if(cYear == nYear && MainActivity.nowMonth == nMonth) {
             //Log.d("TEST", "this month. "+ day.getDate().getMonth() + ", " + day.getText());
             return true;
         }else {
             //Log.d("TEST", "not this month. "+ day.getDate().getMonth() + ", " + day.getText());
             return false;
-        }*/
-        return true;
+        }
     }
     public void getResult(){
         int result = User.getCheckListResult(getContext(), nDate);
