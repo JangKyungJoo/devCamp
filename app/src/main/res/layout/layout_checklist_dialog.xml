@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:padding="@dimen/dialog_padding"
+    android:focusable="true"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dialog_height">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/cleansing_layout"
+                android:visibility="gone"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dialog_title_height"
+                    android:padding="@dimen/dialog_title_padding"
+                    android:background="@color/colorPrimary">
+
+                    <ImageView
+                        android:layout_width="@dimen/dialog_icon_size"
+                        android:layout_height="@dimen/dialog_icon_size"
+                        android:id="@+id/cleanSettingBtn"
+                        android:layout_gravity="left|center"
+                        android:src="@mipmap/icon_check_list"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/dialog_cleansing"/>
+
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/checklist_item_height"
+                    android:id="@+id/cleansing_1"
+                    android:visibility="gone"
+                    android:background="@android:color/darker_gray">
+
+                    <CheckBox
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/checklist_checkbox_size"
+                        android:id="@+id/checkBox_1"
+                        android:checked="false"
+                        android:textColor="@android:color/black"
+                        android:layout_gravity="center"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/checklist_item_height"
+                    android:id="@+id/cleansing_2"
+                    android:visibility="gone"
+                    android:background="@android:color/darker_gray">
+
+                    <CheckBox
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/checklist_checkbox_size"
+                        android:id="@+id/checkBox_2"
+                        android:checked="false"
+                        android:textColor="@android:color/black"
+                        android:layout_gravity="center"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/checklist_item_height"
+                    android:id="@+id/cleansing_3"
+                    android:visibility="gone"
+                    android:background="@android:color/darker_gray">
+
+                    <CheckBox
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/checklist_checkbox_size"
+                        android:id="@+id/checkBox_3"
+                        android:checked="false"
+                        android:textColor="@android:color/black"
+                        android:layout_gravity="center"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/checklist_item_height"
+                    android:id="@+id/cleansing_4"
+                    android:visibility="gone"
+                    android:background="@android:color/darker_gray">
+
+                    <CheckBox
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/checklist_checkbox_size"
+                        android:id="@+id/checkBox_4"
+                        android:checked="false"
+                        android:textColor="@android:color/black"
+                        android:layout_gravity="center"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/skin_layout"
+                android:visibility="gone"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dialog_title_height"
+                    android:padding="@dimen/dialog_title_padding"
+                    android:background="@color/colorPrimary">
+
+                    <ImageView
+                        android:layout_width="@dimen/dialog_icon_size"
+                        android:layout_height="@dimen/dialog_icon_size"
+                        android:layout_gravity="left|center"
+                        android:id="@+id/skinSettingBtn"
+                        android:src="@mipmap/icon_check_list"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/dialog_skincare"/>
+
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/checklist_item_height"
+                    android:id="@+id/skin_1"
+                    android:visibility="gone"
+                    android:background="@android:color/darker_gray">
+
+                    <CheckBox
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/checklist_checkbox_size"
+                        android:id="@+id/skinbox_1"
+                        android:checked="false"
+                        android:textColor="@android:color/black"
+                        android:layout_gravity="center"/>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/checklist_item_height"
+                    android:id="@+id/skin_2"
+                    android:visibility="gone"
+                    android:background="@android:color/darker_gray">
+
+                    <CheckBox
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/checklist_checkbox_size"
+                        android:id="@+id/skinbox_2"
+                        android:checked="false"
+                        android:textColor="@android:color/black"
+                        android:layout_gravity="center"/>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/checklist_item_height"
+                    android:id="@+id/skin_3"
+                    android:visibility="gone"
+                    android:background="@android:color/darker_gray">
+
+                    <CheckBox
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/checklist_checkbox_size"
+                        android:id="@+id/skinbox_3"
+                        android:checked="false"
+                        android:textColor="@android:color/black"
+                        android:layout_gravity="center"/>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/checklist_item_height"
+                    android:id="@+id/skin_4"
+                    android:visibility="gone"
+                    android:background="@android:color/darker_gray">
+
+                    <CheckBox
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/checklist_checkbox_size"
+                        android:id="@+id/skinbox_4"
+                        android:checked="false"
+                        android:textColor="@android:color/black"
+                        android:layout_gravity="center"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dialog_text_height"
+                android:id="@+id/checkListMemo"
+                android:hint="memo"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dialog_saveBtn_height"
+        android:background="@android:color/darker_gray"
+        android:focusable="true"
+        android:layout_marginTop="@dimen/dialog_saveBtn_marginTop"
+        android:focusableInTouchMode="true"
+        android:id="@+id/dialog_saveBtn">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/dialog_saveBtn"/>
+    </FrameLayout>
+</LinearLayout>
