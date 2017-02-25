@@ -84,7 +84,8 @@ public class MainActivity extends AppCompatActivity {
         guideBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), "guide", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), GuideActivity.class);
+                startActivity(intent);
             }
         });
 

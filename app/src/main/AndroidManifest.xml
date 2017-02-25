@@ -17,6 +17,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".SettingActivity"/>
+        <activity android:name=".GuideActivity"/>
+        <activity android:name=".GuideDetailActivity"/>
     </application>
 
 </manifest>

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/activity_title_height"
+        android:background="@color/colorPrimary">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="피부 관리 가이드"
+            android:textStyle="bold"
+            android:textSize="@dimen/activity_title_text_size"
+            android:layout_gravity="center"/>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_guide_height"
+        android:background="@color/colorAccent"
+        android:padding="4dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|center_vertical">
+
+            <ImageView
+                android:layout_width="@dimen/icon_setting_group_size"
+                android:layout_height="@dimen/icon_setting_group_size"
+                android:layout_marginLeft="@dimen/icon_setting_group_margin"
+                android:src="@mipmap/icon_guide_theme"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/setting_text_group_size"
+                android:layout_marginLeft="@dimen/icon_setting_group_margin"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:text="테마별 가이드 선택"/>
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="@dimen/icon_setting_child_size"
+            android:layout_height="@dimen/icon_setting_child_size"
+            android:id="@+id/themeBtn"
+            android:src="@mipmap/icon_setting_arrow_down"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginRight="5dp"/>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_guide_height"
+        android:layout_marginTop="1dp"
+        android:background="@color/colorAccent"
+        android:padding="4dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|center_vertical">
+
+            <ImageView
+                android:layout_width="@dimen/icon_setting_group_size"
+                android:layout_height="@dimen/icon_setting_group_size"
+                android:layout_marginLeft="@dimen/icon_setting_group_margin"
+                android:src="@mipmap/icon_guide_skin_guide"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/setting_text_group_size"
+                android:layout_marginLeft="@dimen/icon_setting_group_margin"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:text="피부별 타입 가이드 선택"/>
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="@dimen/icon_setting_child_size"
+            android:layout_height="@dimen/icon_setting_child_size"
+            android:src="@mipmap/icon_setting_arrow_down"
+            android:id="@+id/skinBtn"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginRight="5dp"/>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_guide_height"
+        android:layout_marginTop="1dp"
+        android:id="@+id/gun"
+        android:padding="4dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="@dimen/setting_text_group_size"
+            android:text="건성"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark"/>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_guide_height"
+        android:layout_marginTop="1dp"
+        android:id="@+id/ji"
+        android:padding="4dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="@dimen/setting_text_group_size"
+            android:textStyle="bold"
+            android:text="지성"
+            android:textColor="@color/colorPrimaryDark"/>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_guide_height"
+        android:layout_marginTop="1dp"
+        android:id="@+id/complex"
+        android:padding="4dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="@dimen/setting_text_group_size"
+            android:textStyle="bold"
+            android:text="복합성"
+            android:textColor="@color/colorPrimaryDark"/>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_guide_height"
+        android:id="@+id/hard"
+        android:layout_marginTop="1dp"
+        android:padding="4dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="@dimen/setting_text_group_size"
+            android:text="민감성"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark"/>
+
+    </FrameLayout>
+
+</LinearLayout>
