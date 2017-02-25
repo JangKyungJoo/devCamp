@@ -1,7 +1,9 @@
 package com.example.devcamp;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,6 +16,8 @@ import sun.bob.mcalendarview.views.BaseCellView;
 import sun.bob.mcalendarview.vo.DayData;
 
 public class DateCellView extends BaseCellView {
+    // c + Date is Current Date (Real Today's Date)
+    // n + Date is date which rendering DateCell's date
     String nDate;
     int nYear, nMonth, nDay, cYear, cMonth, cDay;
     ImageView imageView;
@@ -34,22 +38,30 @@ public class DateCellView extends BaseCellView {
 
     @Override
     public void setDisplayText(DayData day) {
+        Log.d("TEST", "display text");
         setDate(day);
         ((TextView) this.findViewById(R.id.id_cell_text)).setText(day.getText());
         getResult();
-        /*
+
+        if(nMonth == MainActivity.nowMonth){
+            ((TextView) this.findViewById(R.id.id_cell_text)).setTextColor(Color.BLACK);
+        }else if(nMonth == MainActivity.nowMonth + 1 || nMonth == MainActivity.nowMonth - 1){
+            ((TextView) this.findViewById(R.id.id_cell_text)).setTextColor(Color.DKGRAY);
+        }else{
+            ((TextView) this.findViewById(R.id.id_cell_text)).setTextColor(Color.DKGRAY);
+        }
+/*
         if(isThisMonth())
             ((TextView) this.findViewById(R.id.id_cell_text)).setTextColor(Color.BLACK);
         else
             ((TextView) this.findViewById(R.id.id_cell_text)).setTextColor(Color.DKGRAY);
-        */
-
+*/
         if(isToday())
             this.findViewById(R.id.today).setVisibility(VISIBLE);
     }
 
     private void initLayout() {
-        matchParentParams = new AbsListView.LayoutParams((int) CellConfig.cellWidth, (int) (CellConfig.cellHeight * 1.3) );
+        matchParentParams = new AbsListView.LayoutParams((int) CellConfig.cellWidth, (int) (CellConfig.cellHeight * 1.35) );
         this.setLayoutParams(matchParentParams);
         this.setOrientation(VERTICAL);
     }
@@ -66,13 +78,16 @@ public class DateCellView extends BaseCellView {
     }
 
     public boolean isThisMonth(){
-        if(cYear == nYear && cMonth == nMonth) {
+        Log.d("TESTTEST", "nMonth : " + nMonth + ", cMonth : " + cMonth + ", nowMonth" + MainActivity.nowMonth);
+        /*
+        if(cYear == nYear && MainActivity.nowMonth == nMonth) {
             //Log.d("TEST", "this month. "+ day.getDate().getMonth() + ", " + day.getText());
             return true;
         }else {
             //Log.d("TEST", "not this month. "+ day.getDate().getMonth() + ", " + day.getText());
             return false;
-        }
+        }*/
+        return true;
     }
     public void getResult(){
         int result = User.getCheckListResult(getContext(), nDate);

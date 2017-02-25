@@ -111,7 +111,7 @@ public class User {
     }
 
     public static void mockUpData(Context context){
-        /*
+
         String date = "2017.2.25";
 
         saveItemName(context, date + "_" + SKINCARE_NAME, ""+0, "use eye remover");
@@ -125,7 +125,7 @@ public class User {
         saveItemCheck(context, date + "_" + CLEANSING_CHECK, ""+1, false);
         saveItemName(context, date + "_" + CLEANSING_NAME, ""+2, "use bubble bubble");
         saveItemCheck(context, date + "_" + CLEANSING_CHECK, ""+2, false);
-        */
+
 
         saveCheckList(context, "2017.2.24", GOOD);
         saveCheckList(context, "2017.2.23", VERY_GOOD);
@@ -162,6 +162,6 @@ public class User {
 
     public static int getCheckListResult(Context context, String date){
         SharedPreferences preferences = context.getSharedPreferences(CHECKLIST_RESULT, Context.MODE_PRIVATE);
-        return preferences.getInt(date, 0);
+        return preferences.getInt(date, -1);
     }
 }

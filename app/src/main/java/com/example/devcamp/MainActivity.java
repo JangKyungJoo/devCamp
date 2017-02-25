@@ -27,15 +27,14 @@ public class MainActivity extends AppCompatActivity {
 
     TextView YearMonthTv;
     ExpCalendarView expCalendarView;
-    FrameLayout settingBtn, guideBtn, reportBtn, saveBtn;
+    FrameLayout saveBtn;
     LinearLayout cleansingLayout, clean1, clean2, clean3, clean4;
     LinearLayout skinLayout, skin1, skin2, skin3, skin4;
     CheckBox cbox1, cbox2, cbox3, cbox4, sbox1, sbox2, sbox3, sbox4;
-    ImageView cleanSettingBtn, skinSettingBtn;
+    ImageView cleanSettingBtn, skinSettingBtn, settingBtn, guideBtn, reportBtn;
     Dialog mMainDialog;
     String nowDate;
-    DateData todayDate;
-    public static int currentYear, currentMonth, currentDay, tempMonth;
+    public static int nowMonth;
 
 
     @Override
@@ -45,16 +44,16 @@ public class MainActivity extends AppCompatActivity {
 
         expCalendarView = ((ExpCalendarView) findViewById(R.id.calendar_exp));
         YearMonthTv = (TextView) findViewById(R.id.main_YYMM_Tv);
-        settingBtn = (FrameLayout) findViewById(R.id.settingBtn);
-        guideBtn = (FrameLayout) findViewById(R.id.guideBtn);
-        reportBtn = (FrameLayout) findViewById(R.id.reportBtn);
+        settingBtn = (ImageView) findViewById(R.id.settingBtn);
+        guideBtn = (ImageView) findViewById(R.id.guideBtn);
+        reportBtn = (ImageView) findViewById(R.id.reportBtn);
         setCurrentDate();
 
         expCalendarView.setOnDateClickListener(new OnExpDateClickListener()).setOnMonthScrollListener(new OnMonthScrollListener() {
             @Override
             public void onMonthChange(int year, int month) {
-                YearMonthTv.setText(String.format("%d月", month));
-                tempMonth = month;
+                YearMonthTv.setText(String.format("%d.%d", year, month));
+                nowMonth = month;
             }
 
             @Override
@@ -282,19 +281,17 @@ public class MainActivity extends AppCompatActivity {
 
     public void setCurrentDate(){
         Calendar c = Calendar.getInstance();
-        currentYear = c.get(Calendar.YEAR);
-        currentMonth = c.get(Calendar.MONTH) + 1;
-        currentDay = c.get(Calendar.DAY_OF_MONTH);
-        YearMonthTv.setText(String.format("%d月", currentMonth));
-        nowDate = currentYear+"."+currentMonth+"."+currentDay;
-        tempMonth = currentMonth;
+        int cMonth = c.get(Calendar.MONTH) + 1;
+        int cYear = c.get(Calendar.YEAR);
+        YearMonthTv.setText(String.format("%d.%d", cYear, cMonth));
+        nowDate = cYear +"."+ cMonth +"."+c.get(Calendar.DAY_OF_MONTH);
+        nowMonth = cMonth;
     }
 
     public void saveUserData(int count, int cSize, int sSize){
         if(count == 0) {
             User.saveCheckList(getApplicationContext(), nowDate, User.BAD);
         }else if(count == cSize + sSize){
-            // very good
             User.saveCheckList(getApplicationContext(), nowDate, User.VERY_GOOD);
         }else{
             User.saveCheckList(getApplicationContext(), nowDate, User.GOOD);

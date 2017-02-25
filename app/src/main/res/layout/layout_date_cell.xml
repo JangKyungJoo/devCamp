@@ -40,7 +40,7 @@
             <ImageView
                 android:layout_width="@dimen/date_cell_today_size"
                 android:layout_height="@dimen/date_cell_today_size"
-                android:src="@mipmap/ic_launcher"
+                android:src="@mipmap/icon_today"
                 android:id="@+id/today"
                 android:visibility="gone"
                 android:layout_gravity="left"/>
