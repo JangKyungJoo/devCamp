@@ -19,6 +19,8 @@
         <activity android:name=".SettingActivity"/>
         <activity android:name=".GuideActivity"/>
         <activity android:name=".GuideDetailActivity"/>
+        <activity android:name=".CleansingActivity"/>
+        <activity android:name=".SkincareActivity"/>
     </application>
 
 </manifest>

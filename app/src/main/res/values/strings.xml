@@ -4,8 +4,8 @@
     <string name="activity_exp">ExpCalendarAct</string>
     <string name="activity_tab">TabActivity</string>
     <string name="dialog_title">hello dialog</string>
-    <string name="dialog_saveBtn">Save</string>
-    <string name="dialog_skincare">Skin Care</string>
-    <string name="dialog_cleansing">Cleansing</string>
+    <string name="dialog_saveBtn">SAVE</string>
+    <string name="dialog_skincare">SKIN CARE</string>
+    <string name="dialog_cleansing">CLEANSING</string>
     
 </resources>

@@ -71,13 +71,21 @@ public class DateCellView extends BaseCellView {
     }
 
     public boolean isToday(){
-        if(nYear == cYear && nMonth == cMonth && nDay == cDay)
+        /*
+        if(nYear == cYear && nMonth == cMonth && nDay == cDay) {
+            Log.d("TEST", "today : " + nDay);
             return true;
+        }
+        return false;*/
+        // what!!?
+        if(nYear == cYear && nMonth == cMonth && nDay == 26) {
+            Log.d("TEST", "today : " + nDay);
+            return true;
+        }
         return false;
     }
 
     public boolean isThisMonth(){
-        Log.d("TESTTEST", "nMonth : " + nMonth + ", cMonth : " + cMonth + ", nowMonth" + MainActivity.nowMonth);
         if(cYear == nYear && MainActivity.nowMonth == nMonth) {
             //Log.d("TEST", "this month. "+ day.getDate().getMonth() + ", " + day.getText());
             return true;
@@ -110,7 +118,8 @@ public class DateCellView extends BaseCellView {
         nDay = day.getDate().getDay();
         cYear = CurrentCalendar.getCurrentDateData().getYear();
         cMonth = CurrentCalendar.getCurrentDateData().getMonth();
-        cDay = CurrentCalendar.getCurrentDateData().getDay();
+        cDay = CurrentCalendar.getCurrentDateData().getDay()+1;
+        Log.d("TEST", "nDay " + nDay + ", cDay " + cDay);
         nDate = nYear + "." + nMonth + "." + nDay;
     }
 }

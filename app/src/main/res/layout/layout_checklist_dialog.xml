@@ -7,6 +7,21 @@
     android:focusable="true"
     android:orientation="vertical">
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginBottom="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimary"
+            android:text="CHECK LIST"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:layout_gravity="center"/>
+    </FrameLayout>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="@dimen/dialog_height">
@@ -24,22 +39,25 @@
                 android:orientation="vertical">
 
                 <FrameLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="120dp"
                     android:layout_height="@dimen/dialog_title_height"
-                    android:padding="@dimen/dialog_title_padding"
-                    android:background="@color/colorPrimary">
+                    android:background="@drawable/shape_dialog_title">
 
                     <ImageView
                         android:layout_width="@dimen/dialog_icon_size"
                         android:layout_height="@dimen/dialog_icon_size"
                         android:id="@+id/cleanSettingBtn"
-                        android:layout_gravity="left|center"
-                        android:src="@mipmap/icon_clean_very_good"/>
+                        android:layout_gravity="right|center_vertical"
+                        android:layout_marginRight="5dp"
+                        android:src="@mipmap/icon_checklist_setting"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
+                        android:layout_gravity="center|center_vertical"
+                        android:textStyle="bold"
+                        android:layout_marginRight="5dp"
+                        android:textColor="@android:color/white"
                         android:text="@string/dialog_cleansing"/>
 
                 </FrameLayout>
@@ -49,14 +67,14 @@
                     android:layout_height="@dimen/checklist_item_height"
                     android:id="@+id/cleansing_1"
                     android:visibility="gone"
-                    android:background="@android:color/darker_gray">
+                    android:background="@android:color/white">
 
                     <CheckBox
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/checklist_checkbox_size"
                         android:id="@+id/checkBox_1"
                         android:checked="false"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/colorPrimary"
                         android:layout_gravity="center"/>
 
                 </LinearLayout>
@@ -66,14 +84,14 @@
                     android:layout_height="@dimen/checklist_item_height"
                     android:id="@+id/cleansing_2"
                     android:visibility="gone"
-                    android:background="@android:color/darker_gray">
+                    android:background="@android:color/white">
 
                     <CheckBox
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/checklist_checkbox_size"
                         android:id="@+id/checkBox_2"
                         android:checked="false"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/colorPrimary"
                         android:layout_gravity="center"/>
 
                 </LinearLayout>
@@ -83,14 +101,14 @@
                     android:layout_height="@dimen/checklist_item_height"
                     android:id="@+id/cleansing_3"
                     android:visibility="gone"
-                    android:background="@android:color/darker_gray">
+                    android:background="@android:color/white">
 
                     <CheckBox
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/checklist_checkbox_size"
                         android:id="@+id/checkBox_3"
                         android:checked="false"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/colorPrimary"
                         android:layout_gravity="center"/>
 
                 </LinearLayout>
@@ -100,14 +118,14 @@
                     android:layout_height="@dimen/checklist_item_height"
                     android:id="@+id/cleansing_4"
                     android:visibility="gone"
-                    android:background="@android:color/darker_gray">
+                    android:background="@android:color/white">
 
                     <CheckBox
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/checklist_checkbox_size"
                         android:id="@+id/checkBox_4"
                         android:checked="false"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/colorPrimary"
                         android:layout_gravity="center"/>
 
                 </LinearLayout>
@@ -122,22 +140,25 @@
                 android:orientation="vertical">
 
                 <FrameLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="120dp"
                     android:layout_height="@dimen/dialog_title_height"
-                    android:padding="@dimen/dialog_title_padding"
-                    android:background="@color/colorPrimary">
+                    android:background="@drawable/shape_dialog_title">
 
                     <ImageView
                         android:layout_width="@dimen/dialog_icon_size"
                         android:layout_height="@dimen/dialog_icon_size"
-                        android:layout_gravity="left|center"
+                        android:layout_gravity="right|center_vertical"
+                        android:layout_marginRight="5dp"
                         android:id="@+id/skinSettingBtn"
-                        android:src="@mipmap/icon_clean_very_good"/>
+                        android:src="@mipmap/icon_checklist_setting"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
+                        android:layout_marginRight="5dp"
+                        android:textColor="@android:color/white"
+                        android:textStyle="bold"
+                        android:layout_gravity="center|center_vertical"
                         android:text="@string/dialog_skincare"/>
 
                 </FrameLayout>
@@ -147,14 +168,14 @@
                     android:layout_height="@dimen/checklist_item_height"
                     android:id="@+id/skin_1"
                     android:visibility="gone"
-                    android:background="@android:color/darker_gray">
+                    android:background="@android:color/white">
 
                     <CheckBox
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/checklist_checkbox_size"
                         android:id="@+id/skinbox_1"
                         android:checked="false"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/colorPrimary"
                         android:layout_gravity="center"/>
 
                 </LinearLayout>
@@ -163,14 +184,14 @@
                     android:layout_height="@dimen/checklist_item_height"
                     android:id="@+id/skin_2"
                     android:visibility="gone"
-                    android:background="@android:color/darker_gray">
+                    android:background="@android:color/white">
 
                     <CheckBox
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/checklist_checkbox_size"
                         android:id="@+id/skinbox_2"
                         android:checked="false"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/colorPrimary"
                         android:layout_gravity="center"/>
 
                 </LinearLayout>
@@ -179,14 +200,14 @@
                     android:layout_height="@dimen/checklist_item_height"
                     android:id="@+id/skin_3"
                     android:visibility="gone"
-                    android:background="@android:color/darker_gray">
+                    android:background="@android:color/white">
 
                     <CheckBox
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/checklist_checkbox_size"
                         android:id="@+id/skinbox_3"
                         android:checked="false"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/colorPrimary"
                         android:layout_gravity="center"/>
 
                 </LinearLayout>
@@ -195,25 +216,25 @@
                     android:layout_height="@dimen/checklist_item_height"
                     android:id="@+id/skin_4"
                     android:visibility="gone"
-                    android:background="@android:color/darker_gray">
+                    android:background="@android:color/white">
 
                     <CheckBox
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/checklist_checkbox_size"
                         android:id="@+id/skinbox_4"
                         android:checked="false"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/colorPrimary"
                         android:layout_gravity="center"/>
 
                 </LinearLayout>
 
             </LinearLayout>
-
+<!--
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dialog_text_height"
                 android:id="@+id/checkListMemo"
-                android:hint="memo"/>
+                android:hint="memo"/>-->
 
         </LinearLayout>
     </ScrollView>
@@ -221,7 +242,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dialog_saveBtn_height"
-        android:background="@android:color/darker_gray"
+        android:background="@color/colorPrimary"
         android:focusable="true"
         android:layout_marginTop="@dimen/dialog_saveBtn_marginTop"
         android:focusableInTouchMode="true"
@@ -230,6 +251,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
             android:layout_gravity="center"
             android:text="@string/dialog_saveBtn"/>
     </FrameLayout>

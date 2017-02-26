@@ -82,12 +82,12 @@ public class SettingActivity extends AppCompatActivity{
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
                 if(groupPosition == BODY_RYTHM){
-                    Intent intentG = new Intent(getApplicationContext(), BodyRythmActivity.class);
-                    //startActivity(intentG);
+                    Intent intent = new Intent(getApplicationContext(), BodyRythmActivity.class);
+                    //startActivity(intent);
                 }
                 if(groupPosition == TRAINER){
-                    Intent intentR = new Intent(getApplicationContext(), TrainerActivity.class);
-                    //startActivity(intentR);
+                    Intent intent = new Intent(getApplicationContext(), TrainerActivity.class);
+                    //startActivity(intent);
                 }
                 return false;
             }
@@ -101,9 +101,11 @@ public class SettingActivity extends AppCompatActivity{
                 switch(groupPosition){
                     case CHECKLIST :
                         if(childPosition == CLEANSING_LIST){
-                            // setting cleansing list
+                            Intent intent = new Intent(getApplicationContext(), CleansingActivity.class);
+                            startActivity(intent);
                         }else{
-                            // setting skin care list
+                            Intent intent = new Intent(getApplicationContext(), SkincareActivity.class);
+                            startActivity(intent);
                         }
                         break;
 

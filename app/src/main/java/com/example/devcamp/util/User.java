@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class User {
 
@@ -13,6 +14,8 @@ public class User {
     public static final String CLEANSING_CHECK = "cleanCheck";
     public static final String SKINCARE_CHECK = "skinCheck";
     public static final String CHECKLIST_RESULT = "checkListResult";
+    public static final String CURRENT_CLEANSINGLIST = "currentCleasingList";
+    public static final String CURRENT_SKINCARELIST = "currentSkinCareList";
     public static final int VERY_GOOD = 2;
     public static final int GOOD = 1;
     public static final int BAD = 0;
@@ -36,7 +39,6 @@ public class User {
         SharedPreferences.Editor editor = preferences.edit();
 
         editor.putBoolean(id, isCheck);
-        Log.d("TEST", "save " + id +", " + isCheck);
 
         editor.commit();
     }
@@ -44,6 +46,20 @@ public class User {
     public static ArrayList<User> load(Context context, String date, String type) {
 
         if(type.equals(CLEANSING_NAME)){
+            if(compareDate(date)){
+                SharedPreferences current = context.getSharedPreferences(CURRENT_CLEANSINGLIST, Context.MODE_PRIVATE);
+                SharedPreferences currentCheck = context.getSharedPreferences(date + "_" + CLEANSING_CHECK, Context.MODE_PRIVATE);
+
+                ArrayList<User> users = new ArrayList<>();
+
+                for(int i=0; i<current.getAll().size(); i++){
+                    User user = new User();
+                    user.setID(current.getString(""+i, null));
+                    user.setCheck(currentCheck.getBoolean(""+i, false));
+                    users.add(user);
+                }
+                return users;
+            }
 
             SharedPreferences itemName = context.getSharedPreferences(date + "_" + CLEANSING_NAME, Context.MODE_PRIVATE);
             SharedPreferences itemCheck = context.getSharedPreferences(date + "_" + CLEANSING_CHECK, Context.MODE_PRIVATE);
@@ -111,7 +127,7 @@ public class User {
     }
 
     public static void mockUpData(Context context){
-
+/*
         String date = "2017.2.25";
 
         saveItemName(context, date + "_" + SKINCARE_NAME, ""+0, "use eye remover");
@@ -140,15 +156,25 @@ public class User {
         saveCheckList(context, "2017.2.14", VERY_GOOD);
         saveCheckList(context, "2017.2.13", VERY_GOOD);
         saveCheckList(context, "2017.2.12", VERY_GOOD);
+*/
+        SharedPreferences preferences = context.getSharedPreferences(CHECKLIST_RESULT, Context.MODE_PRIVATE);
+        Log.d("Test" ," result : " + preferences.getInt("2017.2.25", 9999));
+        SharedPreferences.Editor editor = preferences.edit();
+
+        editor.putInt("2017.2.25", VERY_GOOD);
+        editor.commit();
     }
 
     public static boolean hasData(Context context, String date){
-        SharedPreferences sn = context.getSharedPreferences(date + "_" + SKINCARE_NAME, Context.MODE_PRIVATE);
-        SharedPreferences cn = context.getSharedPreferences(date + "_" + CLEANSING_NAME, Context.MODE_PRIVATE);
-
-        if(sn.getAll().size() + cn.getAll().size() > 0)
+        if(compareDate(date)) {
             return true;
-        return false;
+        }
+            SharedPreferences sn = context.getSharedPreferences(date + "_" + SKINCARE_NAME, Context.MODE_PRIVATE);
+            SharedPreferences cn = context.getSharedPreferences(date + "_" + CLEANSING_NAME, Context.MODE_PRIVATE);
+
+            if (sn.getAll().size() + cn.getAll().size() > 0)
+                return true;
+            return false;
     }
 
     public static void saveCheckList(Context context, String date, int flag){
@@ -163,5 +189,53 @@ public class User {
     public static int getCheckListResult(Context context, String date){
         SharedPreferences preferences = context.getSharedPreferences(CHECKLIST_RESULT, Context.MODE_PRIVATE);
         return preferences.getInt(date, -1);
+    }
+
+    public static void saveCurrentCleansingList(Context context, ArrayList<String> list){
+        SharedPreferences preferences = context.getSharedPreferences(CURRENT_CLEANSINGLIST, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+
+        int now = preferences.getAll().size();
+        for(int i = 0; i < now; i++){
+            editor.remove("" + i);
+            editor.commit();
+        }
+        for(int i = 0; i< list.size(); i++){
+            editor.putString("" + i, list.get(i));
+            editor.commit();
+        }
+    }
+
+    public static ArrayList<String> getCurrentCleansingList(Context context){
+        SharedPreferences preferences = context.getSharedPreferences(CURRENT_CLEANSINGLIST, Context.MODE_PRIVATE);
+        ArrayList<String> cleansingList = new ArrayList<>();
+
+        for(int i=0; i<preferences.getAll().size(); i++){
+            cleansingList.add(preferences.getString(""+i, ""));
+        }
+        return cleansingList;
+    }
+
+    public static ArrayList<String> getCurrentSkinCareList(Context context){
+        SharedPreferences preferences = context.getSharedPreferences(CURRENT_SKINCARELIST, Context.MODE_PRIVATE);
+        ArrayList<String> skincareList = new ArrayList<>();
+
+        for(int i=0; i<preferences.getAll().size(); i++){
+            skincareList.add(preferences.getString(""+i, ""));
+        }
+        return skincareList;
+    }
+
+    public static boolean compareDate(String date){
+        Log.d("TEST", "date : " + date);
+        String[] temp = date.split("\\.");
+        Calendar c = Calendar.getInstance();
+        c.set(Integer.parseInt(temp[0]), Integer.parseInt(temp[1]), Integer.parseInt(temp[2]));
+        Calendar d = Calendar.getInstance();
+        d.set(d.get(Calendar.YEAR), d.get(Calendar.MONTH) + 1, d.get(Calendar.DAY_OF_MONTH));
+        if(c.compareTo(d) >= 0)
+            return true;
+        else
+            return false;
     }
 }

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
@@ -97,9 +98,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         expCalendarView.setDateCell(R.layout.layout_date_cell);
+        User.mockUpData(getApplicationContext());
     }
 
-    private AlertDialog createDialog(String date) {
+    private AlertDialog createDialog(final String date) {
         final View innerView = getLayoutInflater().inflate(R.layout.layout_checklist_dialog, null);
         AlertDialog.Builder ab = new AlertDialog.Builder(this);
         ab.setView(innerView);
@@ -130,7 +132,8 @@ public class MainActivity extends AppCompatActivity {
         cleanSettingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), "move to setting", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), CleansingActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -138,6 +141,8 @@ public class MainActivity extends AppCompatActivity {
         skinSettingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), SkincareActivity.class);
+                //startActivity(intent);
                 Toast.makeText(getApplicationContext(), "move to setting", Toast.LENGTH_SHORT).show();
             }
         });
@@ -146,11 +151,14 @@ public class MainActivity extends AppCompatActivity {
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveData();
+                Log.d("TEST", "date : " + date);
+                if(isToday(date))
+                    saveData();
+                else
+                    Toast.makeText(getApplicationContext(), "Can save only today's result", Toast.LENGTH_SHORT).show();
                 setDismiss(mMainDialog);
             }
         });
-
         loadCleansingData(innerView, date);
         loadSkincareData(innerView, date);
 
@@ -287,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
         int cMonth = c.get(Calendar.MONTH) + 1;
         int cYear = c.get(Calendar.YEAR);
         YearMonthTv.setText(String.format("%d.%d", cYear, cMonth));
-        nowDate = cYear +"."+ cMonth +"."+c.get(Calendar.DAY_OF_MONTH);
+        nowDate = cYear +"."+ cMonth +"."+c.get(Calendar.DAY_OF_MONTH) + 1;
         nowMonth = cMonth;
     }
 
@@ -301,5 +309,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public boolean isToday(String date){
+        if(date.equals(nowDate))
+            return true;
+        else
+            return false;
+    }
 }
 
