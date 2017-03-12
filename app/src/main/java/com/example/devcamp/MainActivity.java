@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
@@ -36,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView cleanSettingBtn, skinSettingBtn, settingBtn, guideBtn, reportBtn;
     Dialog mMainDialog;
     String nowDate;
+    View clickView;
     public static int nowMonth;
 
 
@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDateClick(View view, DateData date) {
                 if(User.hasData(getApplicationContext(), date.getYear()+"."+date.getMonth()+"."+date.getDay())) {
+                    clickView = view;
                     mMainDialog = createDialog(date.getYear() + "." + date.getMonth() + "." + date.getDay());
                     mMainDialog.show();
                 }
@@ -148,10 +149,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         saveBtn = (FrameLayout) innerView.findViewById(R.id.dialog_saveBtn);
+        if(!isToday(date))
+            saveBtn.setEnabled(false);
+
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("TEST", "date : " + date);
                 if(isToday(date))
                     saveData();
                 else
@@ -159,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
                 setDismiss(mMainDialog);
             }
         });
+
         loadCleansingData(innerView, date);
         loadSkincareData(innerView, date);
 
@@ -294,18 +298,27 @@ public class MainActivity extends AppCompatActivity {
         Calendar c = Calendar.getInstance();
         int cMonth = c.get(Calendar.MONTH) + 1;
         int cYear = c.get(Calendar.YEAR);
+        int cDay = c.get(Calendar.DATE);
         YearMonthTv.setText(String.format("%d.%d", cYear, cMonth));
-        nowDate = cYear +"."+ cMonth +"."+c.get(Calendar.DAY_OF_MONTH) + 1;
+        nowDate = cYear +"."+ cMonth +"."+ cDay;
         nowMonth = cMonth;
     }
 
     public void saveUserData(int count, int cSize, int sSize){
-        if(count == 0) {
-            User.saveCheckList(getApplicationContext(), nowDate, User.BAD);
-        }else if(count == cSize + sSize){
-            User.saveCheckList(getApplicationContext(), nowDate, User.VERY_GOOD);
-        }else{
-            User.saveCheckList(getApplicationContext(), nowDate, User.GOOD);
+        if(clickView != null) {
+            ImageView imageView = (ImageView) clickView.findViewById(R.id.clean_result);
+
+            if (count == 0) {
+                User.saveCheckList(getApplicationContext(), nowDate, User.BAD);
+                imageView.setImageResource(R.mipmap.icon_clean_bad);
+            } else if (count == cSize + sSize) {
+                User.saveCheckList(getApplicationContext(), nowDate, User.VERY_GOOD);
+                imageView.setImageResource(R.mipmap.icon_clean_very_good);
+            } else {
+                User.saveCheckList(getApplicationContext(), nowDate, User.GOOD);
+                imageView.setImageResource(R.mipmap.icon_clean_good);
+            }
+            imageView.setVisibility(View.VISIBLE);
         }
     }
 

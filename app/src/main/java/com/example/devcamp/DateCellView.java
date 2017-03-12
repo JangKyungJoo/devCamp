@@ -1,17 +1,16 @@
 package com.example.devcamp;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.devcamp.util.User;
 
+import java.util.Calendar;
+
 import sun.bob.mcalendarview.CellConfig;
-import sun.bob.mcalendarview.utils.CurrentCalendar;
 import sun.bob.mcalendarview.views.BaseCellView;
 import sun.bob.mcalendarview.vo.DayData;
 
@@ -42,17 +41,18 @@ public class DateCellView extends BaseCellView {
         ((TextView) this.findViewById(R.id.id_cell_text)).setText(day.getText());
         getResult();
 /*
+        안됨..ㅠㅠ
         if(nMonth == MainActivity.nowMonth){
             ((TextView) this.findViewById(R.id.id_cell_text)).setTextColor(Color.BLACK);
         }else if(nMonth == MainActivity.nowMonth + 1 || nMonth == MainActivity.nowMonth - 1){
             ((TextView) this.findViewById(R.id.id_cell_text)).setTextColor(Color.DKGRAY);
         }else{
             ((TextView) this.findViewById(R.id.id_cell_text)).setTextColor(Color.DKGRAY);
-        }*/
+        }
 
         if(isThisMonth())
             ((TextView) this.findViewById(R.id.id_cell_text)).setTextColor(Color.BLACK);
-/*        else
+        else
             ((TextView) this.findViewById(R.id.id_cell_text)).setTextColor(Color.DKGRAY);
 */
         if(isToday())
@@ -71,15 +71,7 @@ public class DateCellView extends BaseCellView {
     }
 
     public boolean isToday(){
-        /*
         if(nYear == cYear && nMonth == cMonth && nDay == cDay) {
-            Log.d("TEST", "today : " + nDay);
-            return true;
-        }
-        return false;*/
-        // what!!?
-        if(nYear == cYear && nMonth == cMonth && nDay == 26) {
-            Log.d("TEST", "today : " + nDay);
             return true;
         }
         return false;
@@ -113,13 +105,14 @@ public class DateCellView extends BaseCellView {
     }
 
     public void setDate(DayData day){
+        Calendar c = Calendar.getInstance();
         nYear = day.getDate().getYear();
         nMonth = day.getDate().getMonth();
         nDay = day.getDate().getDay();
-        cYear = CurrentCalendar.getCurrentDateData().getYear();
-        cMonth = CurrentCalendar.getCurrentDateData().getMonth();
-        cDay = CurrentCalendar.getCurrentDateData().getDay()+1;
-        Log.d("TEST", "nDay " + nDay + ", cDay " + cDay);
         nDate = nYear + "." + nMonth + "." + nDay;
+
+        cYear = c.get(Calendar.YEAR);
+        cMonth = c.get(Calendar.MONTH) + 1;
+        cDay = c.get(Calendar.DATE);
     }
 }
