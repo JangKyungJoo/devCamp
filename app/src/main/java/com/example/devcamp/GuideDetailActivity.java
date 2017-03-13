@@ -1,14 +1,13 @@
 package com.example.devcamp;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 public class GuideDetailActivity extends AppCompatActivity {
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_guide_detail);
+        setContentView(R.layout.activity_guide_detail);
     }
 }
