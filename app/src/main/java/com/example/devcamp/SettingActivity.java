@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ExpandableListView;
 
+
+import com.example.devcamp.alarm.AlarmListActivity;
 import com.example.devcamp.util.BaseExpandableAdapter;
 
 import java.util.ArrayList;
@@ -110,16 +112,23 @@ public class SettingActivity extends AppCompatActivity{
                         break;
 
                     case PUSH_SETTING :
+
                         if(childPosition == ALARM_CLEANSING){
                             // setting alarm
+                            Intent intent = new Intent(SettingActivity.this, AlarmListActivity.class);
+                            intent.putExtra("alarm","cleansing");
+                            startActivity(intent);
                         }else{
                             // setting alarm
+                            Intent intent = new Intent(SettingActivity.this, AlarmListActivity.class);
+                            intent.putExtra("alarm","sleep");
+                            startActivity(intent);
                         }
                         break;
 
                     case SPECIAL_CARE :
                         if(childPosition == SETTING_SPECIAL_SKIN){
-                            Intent intent = new Intent(getApplicationContext(), SpecialCareActivity.class);
+                            Intent intent = new Intent(getApplicationContext(), SpecialActivity.class);
                             startActivity(intent);
                             break;
                         }else{
@@ -128,7 +137,7 @@ public class SettingActivity extends AppCompatActivity{
 
                     case SPECIAL_DAY :
                         if(childPosition == SETTING_SPECIAL_DAY){
-                            Intent intent = new Intent(getApplicationContext(), SpecialDayActivity.class);
+                            Intent intent = new Intent(getApplicationContext(), DdayActivity.class);
                             startActivity(intent);
                             break;
                         }else{

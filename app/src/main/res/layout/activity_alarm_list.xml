@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_alarm_list"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.devcamp.alarm.AlarmListActivity">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#8564CC">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="푸시 알림"
+            android:layout_gravity="center"
+            android:textColor="#ffffff"
+            android:textSize="20dp"/>
+    </FrameLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#A188E5"
+        >
+
+        <TextView
+            android:id="@+id/notiAlarmList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="취침 전 알림"
+            android:textColor="#ffffff"
+            android:textSize="15dp"
+            android:padding="10dp"/>
+    </FrameLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <ListView
+            android:id="@+id/alarmList"
+            android:layout_width="match_parent"
+            android:layout_height="450dp" />
+        <Button
+            android:id="@+id/alarmAdd"
+            android:layout_gravity="bottom"
+            android:layout_width="match_parent"
+            android:background="@color/colorPrimary"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffff"
+            android:text="알람 추가"
+            android:onClick="onClick"/>
+    </FrameLayout>
+
+</LinearLayout>
