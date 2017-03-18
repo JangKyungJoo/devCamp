@@ -15,6 +15,8 @@ import com.example.devcamp.util.Alarm;
 
 import java.util.ArrayList;
 
+import static java.lang.Integer.parseInt;
+
 /**
  * Created by jiyoung on 2017-02-25.
  */
@@ -25,6 +27,9 @@ public class AlarmAdapter extends BaseAdapter {
     private int layout;
     private ArrayList<Alarm> myData;
     private LayoutInflater inflater;
+
+    private static final int HOUR = 0;
+    private static final int MINUTE = 1;
 
     public AlarmAdapter(Context context, int layout, ArrayList<Alarm> data){
         this.context = context;
@@ -79,8 +84,8 @@ public class AlarmAdapter extends BaseAdapter {
         Switch btnCancel = (Switch)convertView.findViewById(R.id.alarmSwitch);
 
 
-
-        textTime.setText(myData.get(position).getTime().toString());
+        String refineTime = setString(myData.get(position).getTime());
+        textTime.setText(refineTime);
         if(myData.get(position).isMonday()){
             monday.setTextColor(Color.parseColor("#B5A5F2"));
         }
@@ -122,5 +127,33 @@ public class AlarmAdapter extends BaseAdapter {
 
 
         return convertView;
+    }
+
+    public String setString(String rawTime){
+        String return_string = "";
+
+        String amPm = rawTime.substring(0,2);
+        String str = rawTime.substring(2);
+
+        return_string += amPm;  // 오전 오후 추가
+
+        String[] spilt_string = str.split(":");
+        if(parseInt(spilt_string[HOUR]) < 10) {       // 시간 부분 처리
+            return_string += "0" + parseInt(spilt_string[HOUR]);
+        }
+        else{
+            return_string += Integer.parseInt(spilt_string[HOUR]);
+        }
+
+        return_string += ":";
+
+        if(parseInt(spilt_string[MINUTE]) < 10) {       // 시간 부분 처리
+            return_string += "0" + parseInt(spilt_string[MINUTE]);
+        }
+        else{
+            return_string += Integer.parseInt(spilt_string[MINUTE]);
+        }
+
+        return return_string;
     }
 }

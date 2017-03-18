@@ -163,10 +163,10 @@ public class AlarmUpdateActivity extends AppCompatActivity {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (data.getTime().contains("오후"))
-                    mTime.setHour(data.getTime().indexOf(2, 4) + 12);
+                    mTime.setHour(refineTime(data.getTime().substring(2), HOUR) + 12);
                 else
-                    mTime.setHour(data.getTime().indexOf(2, 4));
-                mTime.setMinute(data.getTime().indexOf(4, 6));
+                    mTime.setHour(refineTime(data.getTime().substring(2), HOUR));
+                mTime.setMinute(refineTime(data.getTime().substring(2), MINUTE));
             } else {
                 if (data.getTime().contains("오후"))
                     mTime.setCurrentHour(refineTime(data.getTime().substring(2), HOUR) + 12);
