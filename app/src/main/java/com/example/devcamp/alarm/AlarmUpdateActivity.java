@@ -76,10 +76,13 @@ public class AlarmUpdateActivity extends AppCompatActivity {
     boolean saturday = false;
     boolean sunday = false;
     TextView textNoti;
+    int updateFlag;
+    final int INSERT = 0; final int UPDATE = 1;
 
     String ringtoneString;
 
     AlarmDBHelper alarmDBHelper;
+    Alarm data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,8 +98,7 @@ public class AlarmUpdateActivity extends AppCompatActivity {
         } else {
             textNoti.setText("세안 전 알림");
         }
-
-        Alarm data;
+        updateFlag = intent.getIntExtra("updateFlag", -1);
 
         alarmDBHelper = new AlarmDBHelper(this);
         tvSunday = (TextView) findViewById(R.id.txSunday);
@@ -282,7 +284,13 @@ public class AlarmUpdateActivity extends AppCompatActivity {
                     row.put("memo", "씻고 왔나요?");
                 row.put("ringtone", ringtoneString);
 
-                db.insert(AlarmDBHelper.TABLE_NAME, null, row);
+                if(updateFlag == INSERT)
+                    db.insert(AlarmDBHelper.TABLE_NAME, null, row);
+                else if(updateFlag == UPDATE)
+//                    여기 손 봐야 됩니다 ㅠㅠㅠㅠ
+//                    db.update(AlarmDBHelper.TABLE_NAME, row, "id=?", new Integer(data.get_id()));
+
+
 //                db.execSQL("insert into " + AlarmDBHelper.TABLE_NAME + " values (null, '"+time+"', '"+ monday+"', '"+ tuesday+"','"+wednesday
 //                        +"');");
                 // 2. SQL을 사용하여 데이터추가

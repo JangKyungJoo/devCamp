@@ -31,6 +31,9 @@ public class AlarmListActivity extends AppCompatActivity {
     int UpdatePosition;
     private AlarmAdapter alarmAdapter;
     private ListView listView;
+    private final int INSERT = 0;
+    private final int UPDATE = 1;
+
 
     Button addAlarm;
 
@@ -74,6 +77,7 @@ public class AlarmListActivity extends AppCompatActivity {
                 Intent intent = new Intent(AlarmListActivity.this, AlarmUpdateActivity.class);
                 intent.putExtra("data", currentData);
                 intent.putExtra("alarm", intentNoti.getStringExtra("alarm"));
+                intent.putExtra("updateFlag", UPDATE);
                 startActivityForResult(intent, 100);
 
 //                Toast.makeText(MainActivity.this, bookList.get(position).getTitle() + " 선택", Toast.LENGTH_SHORT).show();
@@ -135,6 +139,7 @@ public class AlarmListActivity extends AppCompatActivity {
             case R.id.alarmAdd:
                 Intent intent = new Intent(AlarmListActivity.this, AlarmUpdateActivity.class);
                 intent.putExtra("alarm", intentNoti.getStringExtra("alarm"));
+                intent.putExtra("updateFlag", INSERT);
                 startActivity(intent);
                 finish();
 
