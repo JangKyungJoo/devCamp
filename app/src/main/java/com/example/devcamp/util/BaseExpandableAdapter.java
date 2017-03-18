@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.devcamp.R;
-import com.example.devcamp.SettingActivity;
+import com.example.devcamp.setting.SettingActivity;
 
 import java.util.ArrayList;
 

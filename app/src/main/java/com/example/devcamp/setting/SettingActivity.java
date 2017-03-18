@@ -1,4 +1,4 @@
-package com.example.devcamp;
+package com.example.devcamp.setting;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ExpandableListView;
 
 
+import com.example.devcamp.R;
 import com.example.devcamp.alarm.AlarmListActivity;
 import com.example.devcamp.util.BaseExpandableAdapter;
 

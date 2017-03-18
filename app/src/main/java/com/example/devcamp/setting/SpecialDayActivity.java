@@ -1,4 +1,4 @@
-package com.example.devcamp;
+package com.example.devcamp.setting;
 
 import android.support.v7.app.AppCompatActivity;
 

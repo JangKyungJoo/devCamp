@@ -1,4 +1,4 @@
-package com.example.devcamp;
+package com.example.devcamp.setting;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.devcamp.R;
 import com.example.devcamp.util.User;
 
 import java.util.ArrayList;

@@ -13,10 +13,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.devcamp.guide.GuideActivity;
+import com.example.devcamp.setting.CleansingActivity;
+import com.example.devcamp.setting.SettingActivity;
+import com.example.devcamp.setting.SkincareActivity;
 import com.example.devcamp.util.User;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import sun.bob.mcalendarview.listeners.OnDateClickListener;
 import sun.bob.mcalendarview.listeners.OnExpDateClickListener;
@@ -25,7 +31,12 @@ import sun.bob.mcalendarview.views.ExpCalendarView;
 import sun.bob.mcalendarview.vo.DateData;
 
 public class MainActivity extends AppCompatActivity {
-
+    public static int nowMonth, nowYear, monthCount;
+    public static final int MONTH_FLAG = 1;
+    public static final int MAX_DATE_NUM = 41;
+    public static Queue<Integer> monthCheckQueue;
+    public static Queue<Integer> nextMonth;
+    int cYear, cMonth, cDay;
     TextView YearMonthTv;
     ExpCalendarView expCalendarView;
     FrameLayout saveBtn;
@@ -36,8 +47,6 @@ public class MainActivity extends AppCompatActivity {
     Dialog mMainDialog;
     String nowDate;
     View clickView;
-    public static int nowMonth;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +64,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onMonthChange(int year, int month) {
                 YearMonthTv.setText(String.format("%d.%d", year, month));
+                monthCheckQueue.add(MONTH_FLAG + 2);
+                if(nowYear > year || (nowYear==year && nowMonth > month)){
+                    nextMonth.add(getNextMonth(month-1));
+                }else if(nowYear < year || (nowYear==year && nowMonth < month)){
+                    nextMonth.add(getNextMonth(month+1));
+                }
                 nowMonth = month;
+                nowYear = year;
             }
 
             @Override
@@ -98,10 +114,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        initMonthLayout();
         expCalendarView.setDateCell(R.layout.layout_date_cell);
-        User.mockUpData(getApplicationContext());
+        //User.mockUpData(getApplicationContext());
     }
 
+    // init data about display month date
+    public void initMonthLayout(){
+        monthCheckQueue = new LinkedList<>();
+        nextMonth = new LinkedList<>();
+        monthCount = 0;
+        monthCheckQueue.add(MONTH_FLAG+3);
+        monthCheckQueue.add(MONTH_FLAG);
+        monthCheckQueue.add(MONTH_FLAG);
+        nextMonth.add(cMonth);
+        nextMonth.add(cMonth-1);
+        nextMonth.add(cMonth+1);
+    }
+
+    // create checklist dialog
     private AlertDialog createDialog(final String date) {
         final View innerView = getLayoutInflater().inflate(R.layout.layout_checklist_dialog, null);
         AlertDialog.Builder ab = new AlertDialog.Builder(this);
@@ -135,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), CleansingActivity.class);
                 startActivity(intent);
+                setDismiss(mMainDialog);
             }
         });
 
@@ -144,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), SkincareActivity.class);
                 //startActivity(intent);
-                Toast.makeText(getApplicationContext(), "move to setting", Toast.LENGTH_SHORT).show();
+                //setDismiss(mMainDialog);
             }
         });
 
@@ -163,8 +195,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        loadCleansingData(innerView, date);
-        loadSkincareData(innerView, date);
+        loadCleansingData(date);
+        loadSkincareData(date);
 
         saveBtn.requestFocus();
         return  ab.create();
@@ -175,6 +207,7 @@ public class MainActivity extends AppCompatActivity {
             dialog.dismiss();
     }
 
+    // save each select box result whether true or false
     public void saveData(){
         ArrayList<User> cleansing = User.load(getApplicationContext(), nowDate, User.CLEANSING_NAME);
         ArrayList<User> skin = User.load(getApplicationContext(), nowDate, User.SKINCARE_NAME);
@@ -230,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
         saveUserData(count, cleansing.size(), skin.size());
     }
 
-    public void loadCleansingData(View innerView, String date){
+    public void loadCleansingData(String date){
         ArrayList<User> cleansing = User.load(getApplicationContext(), date, User.CLEANSING_NAME);
         if(cleansing.size() > 0) {
             cleansingLayout.setVisibility(View.VISIBLE);
@@ -262,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void loadSkincareData(View innerView, String date){
+    public void loadSkincareData(String date){
         ArrayList<User> skincare = User.load(getApplicationContext(), date, User.SKINCARE_NAME);
         if(skincare.size() > 0) {
             skinLayout.setVisibility(View.VISIBLE);
@@ -296,14 +329,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void setCurrentDate(){
         Calendar c = Calendar.getInstance();
-        int cMonth = c.get(Calendar.MONTH) + 1;
-        int cYear = c.get(Calendar.YEAR);
-        int cDay = c.get(Calendar.DATE);
+        cMonth = c.get(Calendar.MONTH) + 1;
+        cYear = c.get(Calendar.YEAR);
+        cDay = c.get(Calendar.DATE);
         YearMonthTv.setText(String.format("%d.%d", cYear, cMonth));
         nowDate = cYear +"."+ cMonth +"."+ cDay;
         nowMonth = cMonth;
+        nowYear = cYear;
     }
 
+    // save cleansing result(count) and display result to clicked date cell
     public void saveUserData(int count, int cSize, int sSize){
         if(clickView != null) {
             ImageView imageView = (ImageView) clickView.findViewById(R.id.clean_result);
@@ -327,6 +362,14 @@ public class MainActivity extends AppCompatActivity {
             return true;
         else
             return false;
+    }
+
+    public int getNextMonth(int now){
+        if(now == 0)
+            return 12;
+        if(now == 13)
+            return 1;
+        return now;
     }
 }
 
