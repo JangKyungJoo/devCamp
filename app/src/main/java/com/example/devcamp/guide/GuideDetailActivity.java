@@ -1,7 +1,9 @@
-package com.example.devcamp;
+package com.example.devcamp.guide;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
+import com.example.devcamp.R;
 
 public class GuideDetailActivity extends AppCompatActivity {
 

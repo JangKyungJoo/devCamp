@@ -1,4 +1,4 @@
-package com.example.devcamp;
+package com.example.devcamp.guide;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,6 +8,7 @@ import android.widget.ExpandableListView;
 import android.widget.Toast;
 
 
+import com.example.devcamp.R;
 import com.example.devcamp.util.GuideExpandableAdapter;
 
 import java.util.ArrayList;

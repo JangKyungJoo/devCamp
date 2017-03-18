@@ -1,6 +1,7 @@
 package com.example.devcamp;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.widget.AbsListView;
 import android.widget.ImageView;
@@ -20,6 +21,7 @@ public class DateCellView extends BaseCellView {
     String nDate;
     int nYear, nMonth, nDay, cYear, cMonth, cDay;
     ImageView imageView;
+    TextView textView;
     private AbsListView.LayoutParams matchParentParams;
     Context context;
 
@@ -38,23 +40,10 @@ public class DateCellView extends BaseCellView {
     @Override
     public void setDisplayText(DayData day) {
         setDate(day);
-        ((TextView) this.findViewById(R.id.id_cell_text)).setText(day.getText());
-        getResult();
-/*
-        안됨..ㅠㅠ
-        if(nMonth == MainActivity.nowMonth){
-            ((TextView) this.findViewById(R.id.id_cell_text)).setTextColor(Color.BLACK);
-        }else if(nMonth == MainActivity.nowMonth + 1 || nMonth == MainActivity.nowMonth - 1){
-            ((TextView) this.findViewById(R.id.id_cell_text)).setTextColor(Color.DKGRAY);
-        }else{
-            ((TextView) this.findViewById(R.id.id_cell_text)).setTextColor(Color.DKGRAY);
-        }
-
-        if(isThisMonth())
-            ((TextView) this.findViewById(R.id.id_cell_text)).setTextColor(Color.BLACK);
-        else
-            ((TextView) this.findViewById(R.id.id_cell_text)).setTextColor(Color.DKGRAY);
-*/
+        textView = (TextView) findViewById(R.id.id_cell_text);
+        textView.setText(day.getText());
+        getUserData();
+        setMonthDayText();
         if(isToday())
             this.findViewById(R.id.today).setVisibility(VISIBLE);
     }
@@ -70,6 +59,31 @@ public class DateCellView extends BaseCellView {
         super.onMeasure(measureWidthSpec, measureHeightSpec);
     }
 
+    // set date text, now month text color is black and prev/next month text color is gray
+    public void setMonthDayText(){
+        // initially added (4 + 42(date num)) + (1 + 42) + (1 + 42 + 4)
+        // after month change, added 3 + 42
+        // check only date num(42)
+        if(MainActivity.monthCheckQueue.peek() != null){
+            if(MainActivity.monthCount < MainActivity.monthCheckQueue.peek()){
+                // except previous num 42
+                MainActivity.monthCount++;
+            }else if(MainActivity.monthCount == MainActivity.MAX_DATE_NUM + MainActivity.monthCheckQueue.peek()){
+                // last num
+                MainActivity.monthCheckQueue.poll();
+                MainActivity.nextMonth.poll();
+                MainActivity.monthCount = 0;
+            }else{
+                MainActivity.monthCount++;
+                if(nMonth == MainActivity.nextMonth.peek()){
+                    textView.setTextColor(Color.BLACK);
+                }else{
+                    textView.setTextColor(Color.GRAY);
+                }
+            }
+        }
+    }
+
     public boolean isToday(){
         if(nYear == cYear && nMonth == cMonth && nDay == cDay) {
             return true;
@@ -77,16 +91,8 @@ public class DateCellView extends BaseCellView {
         return false;
     }
 
-    public boolean isThisMonth(){
-        if(cYear == nYear && MainActivity.nowMonth == nMonth) {
-            //Log.d("TEST", "this month. "+ day.getDate().getMonth() + ", " + day.getText());
-            return true;
-        }else {
-            //Log.d("TEST", "not this month. "+ day.getDate().getMonth() + ", " + day.getText());
-            return false;
-        }
-    }
-    public void getResult(){
+    // get user's cleansing data
+    public void getUserData(){
         int result = User.getCheckListResult(getContext(), nDate);
         imageView = (ImageView) this.findViewById(R.id.clean_result);
 

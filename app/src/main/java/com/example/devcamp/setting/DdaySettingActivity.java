@@ -1,4 +1,4 @@
-package com.example.devcamp;
+package com.example.devcamp.setting;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.DatePicker;
 import android.widget.TextView;
+
+import com.example.devcamp.R;
 
 import java.util.Calendar;
 

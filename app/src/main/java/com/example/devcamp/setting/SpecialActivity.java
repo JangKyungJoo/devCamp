@@ -1,4 +1,4 @@
-package com.example.devcamp;
+package com.example.devcamp.setting;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,18 +9,19 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.devcamp.R;
 import com.example.devcamp.util.Dday;
 import com.example.devcamp.util.ListViewAdapter;
 
 import java.util.ArrayList;
 
-public class DdayActivity extends Activity {
+public class SpecialActivity extends Activity {
 
     private View view = null;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dday);
+        setContentView(R.layout.activity_special);
 
         // ArrayAdapter를 통해 LIST로 표시할 오브젝트를 지정한다.
         // 여기서는 심플하게 그냥 String
@@ -41,8 +42,8 @@ public class DdayActivity extends Activity {
             }
         }
         // 아이템을 추가
-        adapter.addItem(ContextCompat.getDrawable(this, R.drawable.specialday_icon_01_edit), "두근두근 소개팅", "2017/08/30", "D-20") ;
-        adapter.addItem(ContextCompat.getDrawable(this, R.drawable.specialday_icon_01_edit), "두근두근 소개팅", "2017/03/14", "D-30") ;
+        adapter.addItem(ContextCompat.getDrawable(this, R.drawable.specialday_icon_01_edit), "각질 제거", "월", "7일주기") ;
+        adapter.addItem(ContextCompat.getDrawable(this, R.drawable.specialday_icon_01_edit), "녹차 팩", "월", "14일주기") ;
         view = findViewById(R.id.addDdayButton);
         //addDdayButton = (Button) findViewById(R.id.addDdayButton);
         // ListView 가져오기
@@ -58,13 +59,13 @@ public class DdayActivity extends Activity {
                 ListView listView = (ListView) parent;
                 // TODO 아이템 클릭시에 구현할 내용은 여기에.
                 String item = (String) listView.getItemAtPosition(position).toString();
-                Toast.makeText(DdayActivity.this, item, Toast.LENGTH_LONG).show();
+                Toast.makeText(SpecialActivity.this, item, Toast.LENGTH_LONG).show();
             }
         });
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent addDday = new Intent(DdayActivity.this, DdaySettingActivity.class);
+                Intent addDday = new Intent(SpecialActivity.this, SpecialSettingActivity.class);
                 startActivity(addDday);
             }
         });
@@ -85,7 +86,7 @@ public class DdayActivity extends Activity {
                 ListView listView = (ListView) parent;
                 // TODO 아이템 선택시에 구현할 내용은 여기에.
                 String item = (String) listView.getSelectedItem();
-                Toast.makeText(DdayActivity.this, item, Toast.LENGTH_LONG).show();
+                Toast.makeText(SpecialActivity.this, item, Toast.LENGTH_LONG).show();
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {

@@ -26,27 +26,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SettingActivity"/>
-        <activity android:name=".GuideActivity"/>
-        <activity android:name=".GuideDetailActivity"/>
-        <activity android:name=".CleansingActivity"/>
+        <activity android:name=".setting.SettingActivity"/>
+        <activity android:name=".guide.GuideActivity"/>
+        <activity android:name=".guide.GuideDetailActivity"/>
+        <activity android:name=".setting.CleansingActivity"/>
         <activity android:name=".alarm.AlarmListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.devcamp.SettingActivity" />
+                android:value="com.example.devcamp.setting.SettingActivity" />
         </activity>
-        <activity android:name=".SpecialActivity"/>
-        <activity android:name=".DdayActivity"/>
-        <activity android:name=".SkincareActivity"/>
-        <activity android:name="SpecialDayActivity"/>
+        <activity android:name=".setting.SpecialActivity"/>
+        <activity android:name=".setting.DdayActivity"/>
+        <activity android:name=".setting.SkincareActivity"/>
+        <activity android:name=".setting.SpecialDayActivity"/>
         <activity android:name=".alarm.AlarmUpdateActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.devcamp.alarm.AlarmListActivity" />
         </activity>
 
-        <activity android:name=".DdaySettingActivity"/>
-        <activity android:name=".SpecialSettingActivity"/>
+        <activity android:name=".setting.DdaySettingActivity"/>
+        <activity android:name=".setting.SpecialSettingActivity"/>
         <receiver android:name=".alarm.AlarmReceiver">
             <intent-filter>
                 <action android:name="com.example.devcamp.alarm.AlarmReceiver" />
