@@ -144,7 +144,7 @@ public class AlarmListActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == 100){
+        if(requestCode == 100){     // 수정하고 온 경우
             switch (resultCode){
                 case Activity.RESULT_OK:
                     Alarm mydata = alarmList.get(UpdatePosition); //고칠려고 클릭했던 객체
