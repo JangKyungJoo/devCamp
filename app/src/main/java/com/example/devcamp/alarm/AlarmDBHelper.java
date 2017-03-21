@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 class AlarmDBHelper  extends SQLiteOpenHelper {
+
     public static final String DB_NAME = "alarm_db";
     public static final String TABLE_NAME = "alarm_table";
 
@@ -24,8 +25,7 @@ class AlarmDBHelper  extends SQLiteOpenHelper {
 
 //        샘플 데이터 추가
 //        sqLiteDatabase.execSQL("insert into " + TABLE_NAME + " values (null, '책1', '작가1', '출판사1', '내용요약1');");
-//        sqLiteDatabase.execSQL("insert into " + TABLE_NAME + " values (null, '책2', '작가2', '출판사2', '내용요약2');");
-//        sqLiteDatabase.execSQL("insert into " + TABLE_NAME + " values (null, '책3', '작가3', '출판사3', '내용요약3');");
+
 
     }
     public void update(String _query){
