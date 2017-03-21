@@ -15,10 +15,6 @@ import com.example.devcamp.util.Alarm;
 
 import java.util.ArrayList;
 
-/**
- * Created by jiyoung on 2017-02-25.
- */
-
 public class AlarmAdapter extends BaseAdapter {
 
     private Context context;

@@ -2,7 +2,11 @@ package com.example.devcamp.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+
+import com.example.devcamp.CheckListResultDBHelper;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -16,22 +20,13 @@ public class User {
     public static final String CHECKLIST_RESULT = "checkListResult";
     public static final String CURRENT_CLEANSINGLIST = "currentCleasingList";
     public static final String CURRENT_SKINCARELIST = "currentSkinCareList";
+    public static final String LAST_UPDATE_DATE = "last_update_date";
+    public static final String START_DATE = "start_date";
     public static final int VERY_GOOD = 2;
     public static final int GOOD = 1;
     public static final int BAD = 0;
     String id;
     boolean isCheck;
-
-    public static void saveItemName(Context context, String key, String id, String name) {
-        // type : yyyy.mm.dd_name
-
-        SharedPreferences preferences = context.getSharedPreferences(key, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-
-        editor.putString(id, name);
-
-        editor.commit();
-    }
 
     public static void saveItemCheck(Context context, String key, String id, boolean isCheck) {
 
@@ -90,26 +85,6 @@ public class User {
         return users;
     }
 
-    public static void clearData(Context context, String date){
-        SharedPreferences cn = context.getSharedPreferences(date + "_" + CLEANSING_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor ce = cn.edit();
-        ce.clear();
-        ce.commit();
-        SharedPreferences sn = context.getSharedPreferences(date + "_" + SKINCARE_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor se = sn.edit();
-        se.clear();
-        se.commit();
-        SharedPreferences cc = context.getSharedPreferences(date + "_" + CLEANSING_CHECK, Context.MODE_PRIVATE);
-        SharedPreferences.Editor cce = cc.edit();
-        cce.clear();
-        cce.commit();
-        SharedPreferences sc = context.getSharedPreferences(date + "_" + SKINCARE_CHECK, Context.MODE_PRIVATE);
-        SharedPreferences.Editor sce = sc.edit();
-        sce.clear();
-        sce.commit();
-
-    }
-
     public void setID(String id){
         this.id = id;
     }
@@ -124,45 +99,6 @@ public class User {
 
     public boolean getCheck(){
         return isCheck;
-    }
-
-    public static void mockUpData(Context context){
-/*
-        String date = "2017.2.25";
-
-        saveItemName(context, date + "_" + SKINCARE_NAME, ""+0, "use eye remover");
-        saveItemCheck(context, date + "_" + SKINCARE_CHECK, ""+0, false);
-        saveItemName(context, date + "_" + SKINCARE_NAME, ""+1, "hello world");
-        saveItemCheck(context, date + "_" + SKINCARE_CHECK, ""+1, false);
-
-        saveItemName(context, date + "_" + CLEANSING_NAME, ""+0, "use eye remover");
-        saveItemCheck(context, date + "_" + CLEANSING_CHECK, ""+0, false);
-        saveItemName(context, date + "_" + CLEANSING_NAME, ""+1, "hello world");
-        saveItemCheck(context, date + "_" + CLEANSING_CHECK, ""+1, false);
-        saveItemName(context, date + "_" + CLEANSING_NAME, ""+2, "use bubble bubble");
-        saveItemCheck(context, date + "_" + CLEANSING_CHECK, ""+2, false);
-
-
-        saveCheckList(context, "2017.2.24", GOOD);
-        saveCheckList(context, "2017.2.23", VERY_GOOD);
-        saveCheckList(context, "2017.2.22", GOOD);
-        saveCheckList(context, "2017.2.21", GOOD);
-        saveCheckList(context, "2017.2.20", BAD);
-        saveCheckList(context, "2017.2.19", BAD);
-        saveCheckList(context, "2017.2.18", GOOD);
-        saveCheckList(context, "2017.2.17", BAD);
-        saveCheckList(context, "2017.2.16", GOOD);
-        saveCheckList(context, "2017.2.15", VERY_GOOD);
-        saveCheckList(context, "2017.2.14", VERY_GOOD);
-        saveCheckList(context, "2017.2.13", VERY_GOOD);
-        saveCheckList(context, "2017.2.12", VERY_GOOD);
-*/
-        SharedPreferences preferences = context.getSharedPreferences(CHECKLIST_RESULT, Context.MODE_PRIVATE);
-        Log.d("Test" ," result : " + preferences.getInt("2017.2.25", 9999));
-        SharedPreferences.Editor editor = preferences.edit();
-
-        editor.putInt("2017.2.25", VERY_GOOD);
-        editor.commit();
     }
 
     public static boolean hasData(Context context, String date){
@@ -186,48 +122,53 @@ public class User {
         editor.commit();
     }
 
-    public static int getCheckListResult(Context context, String date){
-        SharedPreferences preferences = context.getSharedPreferences(CHECKLIST_RESULT, Context.MODE_PRIVATE);
-        return preferences.getInt(date, -1);
+
+    public static String getStartDate(Context context){
+        SharedPreferences preferences = context.getSharedPreferences(START_DATE, Context.MODE_PRIVATE);
+        return preferences.getString(START_DATE, "");
     }
 
-    public static void saveCurrentCleansingList(Context context, ArrayList<String> list){
-        SharedPreferences preferences = context.getSharedPreferences(CURRENT_CLEANSINGLIST, Context.MODE_PRIVATE);
+    public static void setStartDate(Context context, String date){
+        SharedPreferences preferences = context.getSharedPreferences(START_DATE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
 
-        int now = preferences.getAll().size();
-        for(int i = 0; i < now; i++){
-            editor.remove("" + i);
-            editor.commit();
-        }
-        for(int i = 0; i< list.size(); i++){
-            editor.putString("" + i, list.get(i));
+        if(preferences.getString(START_DATE, "").equals("")) {
+            editor.putString(START_DATE, date);
             editor.commit();
         }
     }
 
-    public static ArrayList<String> getCurrentCleansingList(Context context){
-        SharedPreferences preferences = context.getSharedPreferences(CURRENT_CLEANSINGLIST, Context.MODE_PRIVATE);
-        ArrayList<String> cleansingList = new ArrayList<>();
+    public static int getCheckListResultCount(Context context, String date){
+        CheckListResultDBHelper dbHelper = new CheckListResultDBHelper(context);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        for(int i=0; i<preferences.getAll().size(); i++){
-            cleansingList.add(preferences.getString(""+i, ""));
-        }
-        return cleansingList;
+        Cursor c = db.rawQuery("SELECT count(*) from checklist_result_table where date='" + date + "'" + " AND result=1", null);
+        c.moveToFirst();
+        int count= c.getInt(0);
+        Log.d("TEST", "date : " + date + ", cnt : " + count);
+        dbHelper.close();
+
+        return count;
     }
 
-    public static ArrayList<String> getCurrentSkinCareList(Context context){
-        SharedPreferences preferences = context.getSharedPreferences(CURRENT_SKINCARELIST, Context.MODE_PRIVATE);
-        ArrayList<String> skincareList = new ArrayList<>();
+    public static boolean compareToDate(String from , String to){
+        if(to.equals(""))
+            return false;
 
-        for(int i=0; i<preferences.getAll().size(); i++){
-            skincareList.add(preferences.getString(""+i, ""));
-        }
-        return skincareList;
+        String[] temp = from.split("\\.");
+        Calendar c1 = Calendar.getInstance();
+        c1.set(Integer.parseInt(temp[0]), Integer.parseInt(temp[1]), Integer.parseInt(temp[2]));
+
+        String[] temp2 = to.split("\\.");
+        Calendar c2 = Calendar.getInstance();
+        c2.set(Integer.parseInt(temp2[0]), Integer.parseInt(temp2[1]), Integer.parseInt(temp2[2]));
+        if(c1.compareTo(c2) >= 0)
+            return true;
+        else
+            return false;
     }
 
     public static boolean compareDate(String date){
-        Log.d("TEST", "date : " + date);
         String[] temp = date.split("\\.");
         Calendar c = Calendar.getInstance();
         c.set(Integer.parseInt(temp[0]), Integer.parseInt(temp[1]), Integer.parseInt(temp[2]));
@@ -237,5 +178,44 @@ public class User {
             return true;
         else
             return false;
+    }
+
+    public static ArrayList<String> getBetweenDate(String from, String to){
+        ArrayList<String> list = new ArrayList<>();
+        String[] temp = from.split("\\.");
+        String[] temp2 = to.split("\\.");
+
+        Calendar start = Calendar.getInstance();
+        start.set(Integer.parseInt(temp[0]), Integer.parseInt(temp[1]), Integer.parseInt(temp[2]));
+        Calendar end = Calendar.getInstance();
+        end.set(Integer.parseInt(temp2[0]), Integer.parseInt(temp2[1]), Integer.parseInt(temp2[2]));
+
+        while(start.compareTo(end) < 0){
+            list.add(calenderToString(start));
+            start.add(Calendar.DAY_OF_MONTH, 1);
+        }
+
+        return list;
+    }
+
+    public static String calenderToString(Calendar c){
+        return "" + c.get(Calendar.YEAR) + "." + c.get(Calendar.MONTH) + "." + c.get(Calendar.DAY_OF_MONTH);
+    }
+
+    public static void saveLastUpdateDate(Context context, String date){
+        SharedPreferences preferences = context.getSharedPreferences(LAST_UPDATE_DATE, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+
+        if(!preferences.getString(LAST_UPDATE_DATE, "").equals("")) {
+            editor.remove(LAST_UPDATE_DATE);
+        }
+
+        editor.putString(LAST_UPDATE_DATE, date);
+        editor.commit();
+    }
+
+    public static String getLastUpdateDate(Context context){
+        SharedPreferences preferences = context.getSharedPreferences(LAST_UPDATE_DATE, Context.MODE_PRIVATE);
+        return preferences.getString(LAST_UPDATE_DATE, "");
     }
 }

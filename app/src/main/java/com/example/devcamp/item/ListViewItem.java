@@ -1,9 +1,5 @@
 package com.example.devcamp.item;
 
-/**
- * Created by samdasu on 2017-02-26.
- */
-
 import android.graphics.drawable.Drawable;
 
 public class ListViewItem {

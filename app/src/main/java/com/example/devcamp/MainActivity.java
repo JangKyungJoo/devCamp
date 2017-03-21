@@ -1,10 +1,14 @@
 package com.example.devcamp;
 
 import android.app.Dialog;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
@@ -13,6 +17,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.devcamp.Entity.CheckListResult;
+import com.example.devcamp.Entity.CleansingList;
+import com.example.devcamp.Entity.SkincareList;
 import com.example.devcamp.guide.GuideActivity;
 import com.example.devcamp.setting.CleansingActivity;
 import com.example.devcamp.setting.SettingActivity;
@@ -32,6 +39,7 @@ import sun.bob.mcalendarview.vo.DateData;
 
 public class MainActivity extends AppCompatActivity {
     public static int nowMonth, nowYear, monthCount;
+    public static String nowDate;
     public static final int MONTH_FLAG = 1;
     public static final int MAX_DATE_NUM = 41;
     public static Queue<Integer> monthCheckQueue;
@@ -45,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     CheckBox cbox1, cbox2, cbox3, cbox4, sbox1, sbox2, sbox3, sbox4;
     ImageView cleanSettingBtn, skinSettingBtn, settingBtn, guideBtn, reportBtn;
     Dialog mMainDialog;
-    String nowDate;
+    String startDate;
     View clickView;
 
     @Override
@@ -83,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         expCalendarView.setOnDateClickListener(new OnDateClickListener() {
             @Override
             public void onDateClick(View view, DateData date) {
-                if(User.hasData(getApplicationContext(), date.getYear()+"."+date.getMonth()+"."+date.getDay())) {
+                if(User.compareToDate(date.getYear()+"."+date.getMonth()+"."+date.getDay(), startDate)){
                     clickView = view;
                     mMainDialog = createDialog(date.getYear() + "." + date.getMonth() + "." + date.getDay());
                     mMainDialog.show();
@@ -114,9 +122,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //User.saveLastUpdateDate(getApplicationContext(), "2017.3.11");
+        //CheckListResultDBHelper dbHelper = new CheckListResultDBHelper(this);
+        //SQLiteDatabase db = dbHelper.getWritableDatabase();
+        //dbHelper.onCreate(db);
+        //SQLiteDatabase db = dbHelper.getWritableDatabase();
+        //dbHelper.close();
+
         initMonthLayout();
+        updateResult();
         expCalendarView.setDateCell(R.layout.layout_date_cell);
-        //User.mockUpData(getApplicationContext());
     }
 
     // init data about display month date
@@ -130,6 +145,92 @@ public class MainActivity extends AppCompatActivity {
         nextMonth.add(cMonth);
         nextMonth.add(cMonth-1);
         nextMonth.add(cMonth+1);
+    }
+
+    // update checkList result from lastUpdateDate to today
+    public void updateResult(){
+        String lastUpdateDate = User.getLastUpdateDate(getApplicationContext());
+        CheckListResultDBHelper dbHelper = new CheckListResultDBHelper(this);
+        dbHelper.getReadableDatabase();
+        int cnt = getCheckListCount();
+        Log.d("TEST", "start date : " + User.getStartDate(getApplicationContext()));
+        Log.d("TEST", "last update date : " + lastUpdateDate + ", cnt : " + cnt);
+
+        if(!lastUpdateDate.equals("") && cnt > 0 && !lastUpdateDate.equals(nowDate)){
+            ArrayList<String> list = User.getBetweenDate(lastUpdateDate, nowDate);
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+            ArrayList<String> clist = getCleansingList();
+            ArrayList<String> slist = getSkincareList();
+
+            for(int i=0; i<list.size(); i++){
+                for(int j=0; j<clist.size(); j++){
+                    ContentValues row = new ContentValues();
+                    row.put("item", clist.get(j));
+                    row.put("type", 1);
+                    row.put("date", list.get(i));
+                    row.put("result", 0);
+                    db.insert(CheckListResult.TABLE_NAME, null, row);
+                }
+                for(int j=0; j<slist.size(); j++){
+                    ContentValues row = new ContentValues();
+                    row.put("item", slist.get(j));
+                    row.put("type", 2);
+                    row.put("date", list.get(i));
+                    row.put("result", 0);
+                    db.insert(CheckListResult.TABLE_NAME, null, row);
+                }
+            }
+            Log.d("TEST", "update checklist reuslt");
+            dbHelper.close();
+            User.saveLastUpdateDate(getApplicationContext(), nowDate);
+        }
+    }
+
+    public ArrayList<String> getCleansingList(){
+        CleansingListDBHelper dbHelper = new CleansingListDBHelper(this);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c = db.query(CleansingList.TABLE_NAME, null, null, null, null, null, null, null);
+        ArrayList<String> list = new ArrayList<>();
+
+        while(c.moveToNext()){
+            list.add(c.getString(1));
+        }
+
+        dbHelper.close();
+        return list;
+    }
+
+    public ArrayList<String> getSkincareList(){
+        SkincareListDBHelper dbHelper = new SkincareListDBHelper(this);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c = db.query(SkincareList.TABLE_NAME, null, null, null, null, null, null, null);
+        ArrayList<String> list = new ArrayList<>();
+
+        while(c.moveToNext()){
+            list.add(c.getString(1));
+        }
+
+        dbHelper.close();
+        return list;
+    }
+
+    public int getCheckListCount(){
+        CleansingListDBHelper cDBHelper = new CleansingListDBHelper(this);
+        SkincareListDBHelper sDBHelper = new SkincareListDBHelper(this);
+
+        SQLiteDatabase db1 = cDBHelper.getReadableDatabase();
+        SQLiteDatabase db2 = sDBHelper.getReadableDatabase();
+
+        Cursor c1 = db1.query(CleansingList.TABLE_NAME, null, null, null, null, null, null, null);
+        Cursor c2 = db2.query(SkincareList.TABLE_NAME, null, null, null, null, null, null, null);
+
+        int result = c1.getCount() + c2.getCount();
+
+        cDBHelper.close();
+        sDBHelper.close();
+
+        return result;
     }
 
     // create checklist dialog
@@ -264,67 +365,86 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void loadCleansingData(String date){
-        ArrayList<User> cleansing = User.load(getApplicationContext(), date, User.CLEANSING_NAME);
-        if(cleansing.size() > 0) {
+        CheckListResultDBHelper dbHelper = new CheckListResultDBHelper(this);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM checklist_result_table where date='" + date + "'" + " AND type=1", null);
+
+        if(c.getCount() > 0) {
             cleansingLayout.setVisibility(View.VISIBLE);
-            for (int i = 0; i < cleansing.size(); i++) {
-                switch(i){
+            int i = 0;
+            while(c.moveToNext()) {
+                switch (i) {
                     case 0:
                         clean1.setVisibility(View.VISIBLE);
-                        cbox1.setChecked(cleansing.get(i).getCheck());
-                        cbox1.setText(cleansing.get(i).getID());
+                        cbox1.setChecked(intToBool(c.getInt(4)));
+                        cbox1.setEnabled(false);
+                        cbox1.setText(c.getString(1));
                         break;
                     case 1:
                         clean2.setVisibility(View.VISIBLE);
-                        cbox2.setChecked(cleansing.get(i).getCheck());
-                        cbox2.setText(cleansing.get(i).getID());
+                        cbox2.setChecked(intToBool(c.getInt(4)));
+                        cbox2.setEnabled(false);
+                        cbox2.setText(c.getString(1));
                         break;
                     case 2:
                         clean3.setVisibility(View.VISIBLE);
-                        cbox3.setChecked(cleansing.get(i).getCheck());
-                        cbox3.setText(cleansing.get(i).getID());
+                        cbox3.setChecked(intToBool(c.getInt(4)));
+                        cbox3.setEnabled(false);
+                        cbox3.setText(c.getString(1));
                         break;
                     case 3:
                         clean4.setVisibility(View.VISIBLE);
-                        cbox4.setChecked(cleansing.get(i).getCheck());
-                        cbox4.setText(cleansing.get(i).getID());
+                        cbox4.setChecked(intToBool(c.getInt(4)));
+                        cbox4.setEnabled(false);
+                        cbox4.setText(c.getString(1));
                         break;
                     default:
                 }
+                i++;
             }
         }
+        dbHelper.close();
     }
 
     public void loadSkincareData(String date){
-        ArrayList<User> skincare = User.load(getApplicationContext(), date, User.SKINCARE_NAME);
-        if(skincare.size() > 0) {
+        CheckListResultDBHelper dbHelper = new CheckListResultDBHelper(this);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM checklist_result_table where date='" + date + "'" + " AND type=2", null);
+
+        if(c.getCount() > 0) {
             skinLayout.setVisibility(View.VISIBLE);
-            for (int i = 0; i < skincare.size(); i++) {
+            int i = 0;
+            while(c.moveToNext()){
                 switch(i){
                     case 0:
                         skin1.setVisibility(View.VISIBLE);
-                        sbox1.setChecked(skincare.get(i).getCheck());
-                        sbox1.setText(skincare.get(i).getID());
+                        sbox1.setChecked(intToBool(c.getInt(4)));
+                        sbox1.setEnabled(false);
+                        sbox1.setText(c.getString(1));
                         break;
                     case 1:
                         skin2.setVisibility(View.VISIBLE);
-                        sbox2.setChecked(skincare.get(i).getCheck());
-                        sbox2.setText(skincare.get(i).getID());
+                        sbox2.setChecked(intToBool(c.getInt(4)));
+                        sbox2.setEnabled(false);
+                        sbox2.setText(c.getString(1));
                         break;
                     case 2:
                         skin3.setVisibility(View.VISIBLE);
-                        sbox3.setChecked(skincare.get(i).getCheck());
-                        sbox3.setText(skincare.get(i).getID());
+                        sbox3.setChecked(intToBool(c.getInt(4)));
+                        sbox3.setEnabled(false);
+                        sbox3.setText(c.getString(1));
                         break;
                     case 3:
                         skin4.setVisibility(View.VISIBLE);
-                        sbox4.setChecked(skincare.get(i).getCheck());
-                        sbox4.setText(skincare.get(i).getID());
+                        sbox4.setChecked(intToBool(c.getInt(4)));
+                        sbox4.setEnabled(false);
+                        sbox4.setText(c.getString(1));
                         break;
                     default:
                 }
             }
         }
+        dbHelper.close();
     }
 
     public void setCurrentDate(){
@@ -336,9 +456,11 @@ public class MainActivity extends AppCompatActivity {
         nowDate = cYear +"."+ cMonth +"."+ cDay;
         nowMonth = cMonth;
         nowYear = cYear;
+        startDate = User.getStartDate(getApplicationContext());
+        Log.d("TEST", "now date : " + nowDate);
     }
 
-    // save cleansing result(count) and display result to clicked date cell
+    // save cleansing result(count) and display result to date cell clicked
     public void saveUserData(int count, int cSize, int sSize){
         if(clickView != null) {
             ImageView imageView = (ImageView) clickView.findViewById(R.id.clean_result);
@@ -355,6 +477,12 @@ public class MainActivity extends AppCompatActivity {
             }
             imageView.setVisibility(View.VISIBLE);
         }
+    }
+
+    public boolean intToBool(int i){
+        if(i==1)
+            return true;
+        return false;
     }
 
     public boolean isToday(String date){

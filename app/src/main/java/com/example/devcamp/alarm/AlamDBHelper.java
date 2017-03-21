@@ -4,10 +4,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-/**
- * Created by jiyoung on 2017-02-26.
- */
-
 class AlarmDBHelper  extends SQLiteOpenHelper {
     public static final String DB_NAME = "alarm_db";
     public static final String TABLE_NAME = "alarm_table";

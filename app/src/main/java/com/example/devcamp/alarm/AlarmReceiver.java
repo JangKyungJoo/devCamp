@@ -14,10 +14,6 @@ import android.widget.Toast;
 import com.example.devcamp.MainActivity;
 import com.example.devcamp.R;
 
-/**
- * Created by jiyoung on 2016-11-10.
- */
-
 public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {

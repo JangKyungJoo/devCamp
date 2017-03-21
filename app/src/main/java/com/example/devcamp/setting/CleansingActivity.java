@@ -1,6 +1,9 @@
 package com.example.devcamp.setting;
 
 import android.app.Dialog;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -12,13 +15,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.devcamp.CleansingListDBHelper;
+import com.example.devcamp.Entity.CleansingList;
+import com.example.devcamp.MainActivity;
 import com.example.devcamp.R;
 import com.example.devcamp.util.User;
 
 import java.util.ArrayList;
 
+import static com.example.devcamp.Entity.CleansingList.TABLE_NAME;
+
 public class CleansingActivity extends AppCompatActivity{
-    ArrayList<String> list;
+    ArrayList<CleansingList> list;
+    CleansingListDBHelper cleansingListDBHelper;
     FrameLayout saveBtn, cleansing1, cleansing2, cleansing3, cleansing4, addCleansing;
     TextView textView1, textView2, textView3, textView4;
     ImageView updateItem1, updateItem2, updateItem3, updateItem4;
@@ -46,22 +55,38 @@ public class CleansingActivity extends AppCompatActivity{
         updateItem3 = (ImageView) findViewById(R.id.update3);
         updateItem4 = (ImageView) findViewById(R.id.update4);
 
+        cleansingListDBHelper = new CleansingListDBHelper(this);
+
         saveBtn = (FrameLayout) findViewById(R.id.save_cleansing_list);
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                User.saveCurrentCleansingList(getApplicationContext(), list);
-                Toast.makeText(getApplicationContext(), "Save Success!", Toast.LENGTH_SHORT).show();
+                if(list.size() > 0) {
+                    SQLiteDatabase db = cleansingListDBHelper.getWritableDatabase();
+                    db.delete(TABLE_NAME, null, null);
+
+                    for (int i = 0; i < list.size(); i++) {
+                        ContentValues row = new ContentValues();
+                        row.put("item", list.get(i).getItem());
+                        db.insert(TABLE_NAME, null, row);
+                    }
+
+                    Toast.makeText(getApplicationContext(), "Save Success!", Toast.LENGTH_SHORT).show();
+                    User.setStartDate(getApplicationContext(), MainActivity.nowDate);
+                    User.saveLastUpdateDate(getApplicationContext(), MainActivity.nowDate);
+                    cleansingListDBHelper.close();
+                }
                 finish();
             }
         });
 
-        list = User.getCurrentCleansingList(getApplicationContext());
+        list = readDatabase();
         if (list.size() > 0) {
             for (int i = 0; i < list.size(); i++) {
                 showLayout(i);
             }
         }
+
         addCleansing = (FrameLayout) findViewById(R.id.add_cleansinglist);
         addCleansing.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,6 +131,7 @@ public class CleansingActivity extends AppCompatActivity{
                 mMainDialog.show();
             }
         });
+
     }
 
     private AlertDialog createDialog(String text, final String index, final int type) {
@@ -118,13 +144,15 @@ public class CleansingActivity extends AppCompatActivity{
         dialogSaveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                int idx = Integer.parseInt(index);
+
                 if(type == ADD) {
-                    list.add(editText.getText().toString());
-                    showLayout(Integer.parseInt(index));
+                    list.add(new CleansingList(0, editText.getText().toString()));
                 }else{
-                    list.set(Integer.parseInt(index), editText.getText().toString());
-                    showLayout(Integer.parseInt(index));
+                    list.set(idx, new CleansingList(list.get(idx).get_id(), editText.getText().toString()));
                 }
+
+                showLayout(idx);
                 setDismiss(mMainDialog);
             }
         });
@@ -141,22 +169,41 @@ public class CleansingActivity extends AppCompatActivity{
         switch (i) {
             case 0:
                 cleansing1.setVisibility(View.VISIBLE);
-                textView1.setText(list.get(i));
+                textView1.setText(list.get(i).getItem().toString());
                 break;
             case 1:
                 cleansing2.setVisibility(View.VISIBLE);
-                textView2.setText(list.get(i));
+                textView2.setText(list.get(i).getItem().toString());
                 break;
             case 2:
                 cleansing3.setVisibility(View.VISIBLE);
-                textView3.setText(list.get(i));
+                textView3.setText(list.get(i).getItem().toString());
                 break;
             case 3:
                 cleansing4.setVisibility(View.VISIBLE);
-                textView4.setText(list.get(i));
+                textView4.setText(list.get(i).getItem().toString());
                 break;
             default:
                 break;
         }
     }
+
+    private ArrayList<CleansingList> readDatabase() {
+        ArrayList<CleansingList> list = new ArrayList<>();
+        SQLiteDatabase db = cleansingListDBHelper.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null, null);
+
+        while(cursor.moveToNext()) {
+            int id = cursor.getInt(0);
+            String item = cursor.getString(1);
+            CleansingList cleansingList = new CleansingList(id, item);
+            list.add(cleansingList);
+        }
+
+        cursor.close();
+        cleansingListDBHelper.close();
+
+        return list;
+    }
+
 }
