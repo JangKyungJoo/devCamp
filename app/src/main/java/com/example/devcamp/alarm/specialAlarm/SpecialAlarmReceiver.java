@@ -3,6 +3,7 @@ package com.example.devcamp.alarm.specialAlarm;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.widget.Toast;
 
 public class SpecialAlarmReceiver extends BroadcastReceiver {
     public SpecialAlarmReceiver() {
@@ -13,11 +14,8 @@ public class SpecialAlarmReceiver extends BroadcastReceiver {
         // TODO: This method is called when the BroadcastReceiver is receiving
         // an Intent broadcast.
 
-
-        if(intent.getAction().equals("com.example.devcamp.alarm.SpecialAlarmReceiver")){
-            Intent serviceIntent = new Intent(context, SpecialAlarmService.class);
-            context.startService(serviceIntent);
-        }
+        SpecialToast toast = new SpecialToast(context);
+        toast.showToast("메인제목","서브제목", Toast.LENGTH_SHORT);
 
         throw new UnsupportedOperationException("Not yet implemented");
 

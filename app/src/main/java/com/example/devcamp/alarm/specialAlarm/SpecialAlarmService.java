@@ -5,16 +5,18 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.icu.util.Calendar;
 import android.os.IBinder;
 
-import static android.os.Build.VERSION.SDK;
+import java.util.Calendar;
 
 
 public class SpecialAlarmService extends Service {
     AlarmManager alarmManager;
     boolean[] week_clicked = {};
-    private static final long A_WEEK = 1000 * 60 * 60 * 24 * 7;
+    private static final long A_WEEK = 1000 * 60 * 60 * 24 * 7;     // 7일
+    long intervalTime = 24 * 60 * 60 * 1000;// 24시간
+
+    long triggerTime = 0;
 
     public SpecialAlarmService() {
     }
@@ -35,8 +37,8 @@ public class SpecialAlarmService extends Service {
         // 만약 연결된 타입의 서비스를 구현한다면 이 메소드는 재정의 할 필요가 없습니다.
         week_clicked = intent.getBooleanArrayExtra("week_clicked");
         setAlarm(this, week_clicked);
-        sendBroadcast(new Intent("arabiannight.tistory.com.sendreciver.gogogo"));
 
+        return START_REDELIVER_INTENT;    //이전에 전달했던 Intent 가 그대로 전달된다.
     }
 
 
@@ -57,8 +59,9 @@ public class SpecialAlarmService extends Service {
     private void setAlarm(Context context, boolean[] week) {        // week : 요일 선택 boolean Array (일~토)
 
         alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        cancelAlarm();
+//        cancelAlarm();
 
+        // 알람 진행 요일 확인
         boolean[] week_repeat = {};
 
         int len = week.length;
@@ -71,66 +74,58 @@ public class SpecialAlarmService extends Service {
             }
         }
 
-        // 알람 등록
-        Intent intent = new Intent(this, SpecialAlarmReceiver.class);
-
-        long triggerTime = 0;
-        long intervalTime = 24 * 60 * 60 * 1000;// 24시간
+        // 진행되는 알람 요일에 맞춰 알람 저장
         if(week_repeat[0])
         {
-            intent.putExtra("one_time", false);
-            intent.putExtra("day_of_week", week);
-            PendingIntent pending = getPendingIntent(intent);
-
+            PendingIntent pending = getPendingIntent();
             triggerTime = setTriggerTime();
 
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, triggerTime, intervalTime, pending);
         }
-        else
-        {
-            intent.putExtra("one_time", true);
-            PendingIntent pending = getPendingIntent(intent);
 
-            triggerTime = setTriggerTime();
-            alarmManager.set(AlarmManager.RTC_WAKEUP, triggerTime, pending);
-        }
     }
 
-
-    private PendingIntent getPendingIntent(Intent intent)
+    // 알람의 설정 시각에 발생하는 pendingIntent 작성
+    private PendingIntent getPendingIntent()
     {
+        // 알람 등록
+        Intent intent = new Intent(this, SpecialAlarmReceiver.class);
+
+        // 일단 broadcastId는 0으로 진행
         PendingIntent pIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         return pIntent;
     }
 
 
     // SUNDAY : 1 ~ SATURDAY : 7
-    private long setTriggerTime()
-    {
-
-        if()
+    private long setTriggerTime() {
         // current Time
         long atime = System.currentTimeMillis();
+
         // timepicker
         Calendar curTime = Calendar.getInstance();
-        curTime.set(Calendar.HOUR_OF_DAY, 12);
-        curTime.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
-        curTime.set(Calendar.MINUTE, 36);
-        curTime.set(Calendar.SECOND, 0);
-        curTime.set(Calendar.MILLISECOND, 0);
+
+        curTime.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);   // 요일
+        curTime.set(Calendar.HOUR_OF_DAY, 16);                  // 시간
+        curTime.set(Calendar.MINUTE, 45);                       // 분
+        curTime.set(Calendar.SECOND, 0);                        // 초
+        curTime.set(Calendar.MILLISECOND, 0);                   // 세부 초
+
         long btime = curTime.getTimeInMillis();
         long triggerTime = btime;
+
         if (atime > btime)
             triggerTime += 1000 * 60 * 60 * 24;
 
         return triggerTime;
+
     }
 
-    private void cancelAlarm()
-    {
-        Intent intent = new Intent(this, SpecialAlarmReceiver.class);
-        PendingIntent pending = getPendingIntent(intent);
-        this.alarmManager.cancel(pending);
-    }
+//    private void cancelAlarm()
+//    {
+//        Intent intent = new Intent(this, SpecialAlarmReceiver.class);
+//        PendingIntent pending = getPendingIntent(intent);
+//        this.alarmManager.cancel(pending);
+//    }
 
 }
