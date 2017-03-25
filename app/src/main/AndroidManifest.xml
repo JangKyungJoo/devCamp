@@ -8,17 +8,15 @@
 
     <application
         android:allowBackup="true"
+        android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:hardwareAccelerated="false"
-        android:largeHeap="true">
-
-        <activity android:name=".MainActivity">
-
-        </activity>
-        <activity android:name=".SplashActivity"
+        android:theme="@style/AppTheme">
+        <activity android:name=".MainActivity" />
+        <activity
+            android:name=".SplashActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,33 +24,45 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".setting.SettingActivity"/>
-        <activity android:name=".guide.GuideActivity"/>
-        <activity android:name=".guide.GuideDetailActivity"/>
-        <activity android:name=".setting.CleansingActivity"/>
+        <activity android:name=".setting.SettingActivity" />
+        <activity android:name=".guide.GuideActivity" />
+        <activity android:name=".guide.GuideDetailActivity" />
+        <activity android:name=".setting.CleansingActivity" />
         <activity android:name=".alarm.AlarmListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.devcamp.setting.SettingActivity" />
         </activity>
-        <activity android:name=".setting.SpecialActivity"/>
-        <activity android:name=".setting.DdayActivity"/>
-        <activity android:name=".setting.SkincareActivity"/>
-        <activity android:name=".setting.SpecialDayActivity"/>
+        <activity android:name=".setting.SpecialActivity" />
+        <activity android:name=".setting.DdayActivity" />
+        <activity android:name=".setting.SkincareActivity" />
+        <activity android:name=".setting.SpecialDayActivity" />
         <activity android:name=".alarm.AlarmUpdateActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.devcamp.alarm.AlarmListActivity" />
         </activity>
+        <activity android:name=".setting.DdaySettingActivity" />
+        <activity android:name=".setting.SpecialSettingActivity" />
 
-        <activity android:name=".setting.DdaySettingActivity"/>
-        <activity android:name=".setting.SpecialSettingActivity"/>
         <receiver android:name=".alarm.AlarmReceiver">
             <intent-filter>
                 <action android:name="com.example.devcamp.alarm.AlarmReceiver" />
             </intent-filter>
         </receiver>
+        <receiver
+            android:name=".alarm.specialAlarm.SpecialAlarmReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.example.devcamp.alarm.SpecialAlarmReceiver"></action>
+            </intent-filter>
+        </receiver>
 
+        <service
+            android:name=".alarm.specialAlarm.SpecialAlarmService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
