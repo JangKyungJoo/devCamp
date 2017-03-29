@@ -1,21 +1,21 @@
-package com.example.devcamp;
+package com.example.devcamp.util;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import static com.example.devcamp.Entity.CleansingList.TABLE_NAME;
+import com.example.devcamp.entity.Memo;
 
-public class CleansingListDBHelper extends SQLiteOpenHelper {
+public class MemoDBHelper extends SQLiteOpenHelper{
 
-    public CleansingListDBHelper(Context context) {
-        super(context, "clean_db", null, 1);
+    public MemoDBHelper(Context context) {
+        super(context, "memo_db", null, 1);
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
-        String createTable = "create table IF NOT EXISTS " + TABLE_NAME + " ( _id integer primary key autoincrement, item text);";
+        String createTable = "create table IF NOT EXISTS " + Memo.TABLE_NAME + " ( _id integer primary key autoincrement, memo text, date text);";
         sqLiteDatabase.execSQL(createTable);
 
     }

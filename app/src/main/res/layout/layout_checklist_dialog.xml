@@ -229,12 +229,14 @@
                 </LinearLayout>
 
             </LinearLayout>
-<!--
+
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dialog_text_height"
                 android:id="@+id/checkListMemo"
-                android:hint="memo"/>-->
+                android:background="@drawable/layout_border_textview"
+                android:paddingLeft="5dp"
+                android:hint="memo.."/>
 
         </LinearLayout>
     </ScrollView>

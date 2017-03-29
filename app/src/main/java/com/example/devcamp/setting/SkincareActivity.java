@@ -2,7 +2,6 @@ package com.example.devcamp.setting;
 
 import android.app.Dialog;
 import android.content.ContentValues;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,15 +15,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.devcamp.Entity.SkincareList;
 import com.example.devcamp.MainActivity;
 import com.example.devcamp.R;
-import com.example.devcamp.SkincareListDBHelper;
+import com.example.devcamp.entity.SkincareList;
+import com.example.devcamp.util.SkincareListDBHelper;
 import com.example.devcamp.util.User;
 
 import java.util.ArrayList;
 
-import static com.example.devcamp.Entity.SkincareList.TABLE_NAME;
+import static com.example.devcamp.entity.SkincareList.TABLE_NAME;
 
 public class SkincareActivity extends AppCompatActivity{
 
@@ -58,7 +57,6 @@ public class SkincareActivity extends AppCompatActivity{
         updateItem4 = (ImageView) findViewById(R.id.update4);
 
         skincareListDBHelper = new SkincareListDBHelper(this);
-        SQLiteDatabase db = skincareListDBHelper.getReadableDatabase();
 
         saveBtn = (FrameLayout) findViewById(R.id.save_cleansing_list);
         saveBtn.setOnClickListener(new View.OnClickListener() {
@@ -83,7 +81,7 @@ public class SkincareActivity extends AppCompatActivity{
             }
         });
 
-        list = readDatabase();
+        list = User.getSkincareList(getApplicationContext());
         if (list.size() > 0) {
             for (int i = 0; i < list.size(); i++) {
                 showLayout(i);
@@ -111,14 +109,6 @@ public class SkincareActivity extends AppCompatActivity{
             }
         });
 
-        updateItem1.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                Log.d("TEST", "long clikc");
-                return false;
-            }
-        });
-
         updateItem2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -143,6 +133,14 @@ public class SkincareActivity extends AppCompatActivity{
             }
         });
 
+        cleansing1.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Log.d("TEST", "long click");
+                return false;
+            }
+        });
+
     }
 
     private AlertDialog createDialog(String text, final String index, final int type) {
@@ -150,6 +148,7 @@ public class SkincareActivity extends AppCompatActivity{
         AlertDialog.Builder ab = new AlertDialog.Builder(this);
         final EditText editText = (EditText) innerView.findViewById(R.id.checklist_edittext);
         editText.setText(text);
+        editText.setSelection(text.length());
 
         FrameLayout dialogSaveBtn = (FrameLayout) innerView.findViewById(R.id.checklist_dialog_save);
         dialogSaveBtn.setOnClickListener(new View.OnClickListener() {
@@ -198,23 +197,4 @@ public class SkincareActivity extends AppCompatActivity{
                 break;
         }
     }
-
-    private ArrayList<SkincareList> readDatabase() {
-        ArrayList<SkincareList> list = new ArrayList<>();
-        SQLiteDatabase db = skincareListDBHelper.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null, null);
-
-        while(cursor.moveToNext()) {
-            int id = cursor.getInt(0);
-            String item = cursor.getString(1);
-            SkincareList skincareList = new SkincareList(id, item);
-            list.add(skincareList);
-        }
-
-        cursor.close();
-        skincareListDBHelper.close();
-
-        return list;
-    }
-
 }

@@ -1,4 +1,4 @@
-package com.example.devcamp.Entity;
+package com.example.devcamp.entity;
 
 public class SkincareList {
     public static final String TABLE_NAME = "skincare_list_table";

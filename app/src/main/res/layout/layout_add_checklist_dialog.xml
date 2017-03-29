@@ -1,18 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="match_parent"
+    android:padding="@dimen/dialog_padding"
     android:background="@android:color/white">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginBottom="30dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimary"
+            android:text="ADD CHECK LIST"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:layout_gravity="center"/>
+    </FrameLayout>
+
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:textColor="@android:color/black"
+        android:background="@drawable/layout_border_textview"
+        android:paddingLeft="5dp"
         android:id="@+id/checklist_edittext"/>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="30dp"
+        android:layout_marginTop="20dp"
         android:id="@+id/checklist_dialog_save"
         android:background="@color/colorPrimary">
 

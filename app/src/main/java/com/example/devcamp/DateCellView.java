@@ -16,9 +16,8 @@ import sun.bob.mcalendarview.views.BaseCellView;
 import sun.bob.mcalendarview.vo.DayData;
 
 public class DateCellView extends BaseCellView {
-    // c + Date is Current Date (Real Today's Date)
     // n + Date is date which rendering DateCell's date
-    String nDate, cDate;
+    String nDate, today;
     int nYear, nMonth, nDay, cYear, cMonth, cDay;
     ImageView imageView;
     TextView textView;
@@ -96,21 +95,25 @@ public class DateCellView extends BaseCellView {
         String start = User.getStartDate(getContext());
         imageView = (ImageView) this.findViewById(R.id.clean_result);
 
-        // get data from startDate to Today
-        if(User.compareToDate(nDate, start) && User.compareToDate(cDate, nDate)){
-            int result = User.getCheckListResultCount(getContext(), nDate);
+        // get result from startDate to Today
+        if(User.compareToDate(nDate, start) && User.compareToDate(today, nDate)){
+            // result[0] : count of true, result[1] : count of false;
+            int result[] = User.getCheckListResultCount(getContext(), nDate);
+            int total = result[0] + result[1];
 
-            if(result == User.VERY_GOOD) {
-                imageView.setImageResource(R.mipmap.icon_clean_very_good);
-                imageView.setVisibility(VISIBLE);
-            }else if(result == User.GOOD) {
-                imageView.setImageResource(R.mipmap.icon_clean_good);
-                imageView.setVisibility(VISIBLE);
-            }else if(result == User.BAD){
-                imageView.setImageResource(R.mipmap.icon_clean_bad);
-                imageView.setVisibility(VISIBLE);
-            }else{
-                imageView.setVisibility(GONE);
+            if(total > 0) {
+                if (result[0] == total) {
+                    imageView.setImageResource(R.mipmap.icon_clean_very_good);
+                    imageView.setVisibility(VISIBLE);
+                } else if (result[0] > 0 && result[0] < total) {
+                    imageView.setImageResource(R.mipmap.icon_clean_good);
+                    imageView.setVisibility(VISIBLE);
+                } else if (result[0] == 0) {
+                    imageView.setImageResource(R.mipmap.icon_clean_bad);
+                    imageView.setVisibility(VISIBLE);
+                } else {
+                    imageView.setVisibility(GONE);
+                }
             }
         }
     }
@@ -125,6 +128,6 @@ public class DateCellView extends BaseCellView {
         cYear = c.get(Calendar.YEAR);
         cMonth = c.get(Calendar.MONTH) + 1;
         cDay = c.get(Calendar.DATE);
-        cDate = cYear + "." + cMonth + "." + (cDay - 1);
+        today = cYear + "." + cMonth + "." + cDay;
     }
 }

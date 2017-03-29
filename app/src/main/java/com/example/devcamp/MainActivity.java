@@ -11,19 +11,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.devcamp.Entity.CheckListResult;
-import com.example.devcamp.Entity.CleansingList;
-import com.example.devcamp.Entity.SkincareList;
+import com.example.devcamp.entity.CheckListResult;
+import com.example.devcamp.entity.CleansingList;
+import com.example.devcamp.entity.Memo;
+import com.example.devcamp.entity.SkincareList;
 import com.example.devcamp.guide.GuideActivity;
 import com.example.devcamp.setting.CleansingActivity;
 import com.example.devcamp.setting.SettingActivity;
 import com.example.devcamp.setting.SkincareActivity;
+import com.example.devcamp.util.CheckListResultDBHelper;
+import com.example.devcamp.util.CleansingListDBHelper;
+import com.example.devcamp.util.MemoDBHelper;
+import com.example.devcamp.util.SkincareListDBHelper;
 import com.example.devcamp.util.User;
 
 import java.util.ArrayList;
@@ -44,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     public static final int MAX_DATE_NUM = 41;
     public static Queue<Integer> monthCheckQueue;
     public static Queue<Integer> nextMonth;
+    public final int SHOW_RESULT = 1;
+    public final int SHOW_CHECK_LIST = 0;
     int cYear, cMonth, cDay;
     TextView YearMonthTv;
     ExpCalendarView expCalendarView;
@@ -53,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     CheckBox cbox1, cbox2, cbox3, cbox4, sbox1, sbox2, sbox3, sbox4;
     ImageView cleanSettingBtn, skinSettingBtn, settingBtn, guideBtn, reportBtn;
     Dialog mMainDialog;
+    EditText editText;
     String startDate;
     View clickView;
 
@@ -91,10 +100,51 @@ public class MainActivity extends AppCompatActivity {
         expCalendarView.setOnDateClickListener(new OnDateClickListener() {
             @Override
             public void onDateClick(View view, DateData date) {
-                if(User.compareToDate(date.getYear()+"."+date.getMonth()+"."+date.getDay(), startDate)){
-                    clickView = view;
-                    mMainDialog = createDialog(date.getYear() + "." + date.getMonth() + "." + date.getDay());
-                    mMainDialog.show();
+                String clickDate = date.getYear() + "." + date.getMonth() + "." + date.getDay();
+                if (startDate.equals("")){
+                    Toast.makeText(getApplicationContext(), "please set check list", Toast.LENGTH_SHORT).show();
+                }else {
+                    if(isToday(clickDate) || !User.compareToDate(clickDate, startDate)){
+                        // clickDate <= today
+                        int result[] = User.getCheckListResultCount(getApplicationContext(), clickDate);
+
+                        if(isToday(clickDate)){
+                            if(result[0] + result[1] > 0){
+                                // has today's result
+                                mMainDialog = createDialog(clickDate, SHOW_RESULT);
+                                clickView = view;
+                                mMainDialog.show();
+                                return;
+                            }else{
+                                if(getCurrentCheckListCount() > 0) {
+                                    // before save today's result && has checklist
+                                    mMainDialog = createDialog(clickDate, SHOW_CHECK_LIST);
+                                    clickView = view;
+                                    mMainDialog.show();
+                                    return;
+                                }
+                                Toast.makeText(getApplicationContext(), "please set check list", Toast.LENGTH_SHORT).show();
+                            }
+                        }else{
+                            if(result[0] + result[1] > 0) {
+                                // has clickDate's result
+                                mMainDialog = createDialog(clickDate, SHOW_RESULT);
+                                clickView = view;
+                                mMainDialog.show();
+                                return;
+                            }
+                            Toast.makeText(getApplicationContext(), "no check list data", Toast.LENGTH_SHORT).show();
+                        }
+                    }else{
+                        // clickDate > today
+                        if(getCurrentCheckListCount() > 0) {
+                            mMainDialog = createDialog(clickDate, SHOW_CHECK_LIST);
+                            clickView = view;
+                            mMainDialog.show();
+                            return;
+                        }
+                        Toast.makeText(getApplicationContext(), "please set check list", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -122,13 +172,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //User.saveLastUpdateDate(getApplicationContext(), "2017.3.11");
-        //CheckListResultDBHelper dbHelper = new CheckListResultDBHelper(this);
-        //SQLiteDatabase db = dbHelper.getWritableDatabase();
-        //dbHelper.onCreate(db);
-        //SQLiteDatabase db = dbHelper.getWritableDatabase();
-        //dbHelper.close();
-
         initMonthLayout();
         updateResult();
         expCalendarView.setDateCell(R.layout.layout_date_cell);
@@ -152,70 +195,86 @@ public class MainActivity extends AppCompatActivity {
         String lastUpdateDate = User.getLastUpdateDate(getApplicationContext());
         CheckListResultDBHelper dbHelper = new CheckListResultDBHelper(this);
         dbHelper.getReadableDatabase();
-        int cnt = getCheckListCount();
+        int cnt = getCurrentCheckListCount();
         Log.d("TEST", "start date : " + User.getStartDate(getApplicationContext()));
         Log.d("TEST", "last update date : " + lastUpdateDate + ", cnt : " + cnt);
+        dbHelper.close();
 
         if(!lastUpdateDate.equals("") && cnt > 0 && !lastUpdateDate.equals(nowDate)){
             ArrayList<String> list = User.getBetweenDate(lastUpdateDate, nowDate);
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            save(list, null, null);
+        }
+    }
 
-            ArrayList<String> clist = getCleansingList();
-            ArrayList<String> slist = getSkincareList();
+    public void save(ArrayList<String> list, ArrayList<Boolean> cResult, ArrayList<Boolean> sResult){
+        CheckListResultDBHelper dbHelper = new CheckListResultDBHelper(this);
+        MemoDBHelper memoDBHelper = new MemoDBHelper(this);
+        SQLiteDatabase memodb = memoDBHelper.getWritableDatabase();
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-            for(int i=0; i<list.size(); i++){
-                for(int j=0; j<clist.size(); j++){
+        ArrayList<CleansingList> clist = User.getCleansingList(getApplicationContext());
+        ArrayList<SkincareList> slist = User.getSkincareList(getApplicationContext());
+
+        if(list == null){
+            // save today result
+            int count = 0;
+            db.execSQL("DELETE FROM " + CheckListResult.TABLE_NAME + " WHERE date='" + nowDate + "'");
+            for (int j = 0; j < clist.size(); j++) {
+                ContentValues row = new ContentValues();
+                row.put("item", clist.get(j).getItem());
+                row.put("type", 1);
+                row.put("date", nowDate);
+                row.put("result", cResult.get(j));
+                if(cResult.get(j)) count++;
+                db.insert(CheckListResult.TABLE_NAME, null, row);
+            }
+            for (int j = 0; j < slist.size(); j++) {
+                ContentValues row = new ContentValues();
+                row.put("item", slist.get(j).getItem());
+                row.put("type", 2);
+                row.put("date", nowDate);
+                row.put("result", sResult.get(j));
+                if(sResult.get(j)) count++;
+                db.insert(CheckListResult.TABLE_NAME, null, row);
+            }
+            memodb.execSQL("DELETE FROM " + Memo.TABLE_NAME + " WHERE date='" + nowDate + "'");
+            ContentValues row = new ContentValues();
+            row.put("memo", editText.getText().toString());
+            row.put("date", nowDate);
+            memodb.insert(Memo.TABLE_NAME, null, row);
+            updateView(count, clist.size(), slist.size());
+        }else {
+            // save between lastUpdateDate to today
+            for (int i = 0; i < list.size(); i++) {
+                for (int j = 0; j < clist.size(); j++) {
                     ContentValues row = new ContentValues();
-                    row.put("item", clist.get(j));
+                    row.put("item", clist.get(j).getItem());
                     row.put("type", 1);
                     row.put("date", list.get(i));
                     row.put("result", 0);
                     db.insert(CheckListResult.TABLE_NAME, null, row);
                 }
-                for(int j=0; j<slist.size(); j++){
+                for (int j = 0; j < slist.size(); j++) {
                     ContentValues row = new ContentValues();
-                    row.put("item", slist.get(j));
+                    row.put("item", slist.get(j).getItem());
                     row.put("type", 2);
                     row.put("date", list.get(i));
                     row.put("result", 0);
                     db.insert(CheckListResult.TABLE_NAME, null, row);
                 }
+                ContentValues row = new ContentValues();
+                row.put("memo", "");
+                row.put("date", list.get(i));
+                memodb.insert(Memo.TABLE_NAME, null, row);
             }
-            Log.d("TEST", "update checklist reuslt");
-            dbHelper.close();
-            User.saveLastUpdateDate(getApplicationContext(), nowDate);
         }
-    }
-
-    public ArrayList<String> getCleansingList(){
-        CleansingListDBHelper dbHelper = new CleansingListDBHelper(this);
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor c = db.query(CleansingList.TABLE_NAME, null, null, null, null, null, null, null);
-        ArrayList<String> list = new ArrayList<>();
-
-        while(c.moveToNext()){
-            list.add(c.getString(1));
-        }
-
+        User.saveLastUpdateDate(getApplicationContext(), nowDate);
+        Log.d("TEST", "update checklist reuslt");
         dbHelper.close();
-        return list;
+        memoDBHelper.close();
     }
 
-    public ArrayList<String> getSkincareList(){
-        SkincareListDBHelper dbHelper = new SkincareListDBHelper(this);
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor c = db.query(SkincareList.TABLE_NAME, null, null, null, null, null, null, null);
-        ArrayList<String> list = new ArrayList<>();
-
-        while(c.moveToNext()){
-            list.add(c.getString(1));
-        }
-
-        dbHelper.close();
-        return list;
-    }
-
-    public int getCheckListCount(){
+    public int getCurrentCheckListCount(){
         CleansingListDBHelper cDBHelper = new CleansingListDBHelper(this);
         SkincareListDBHelper sDBHelper = new SkincareListDBHelper(this);
 
@@ -234,10 +293,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // create checklist dialog
-    private AlertDialog createDialog(final String date) {
+    private AlertDialog createDialog(final String date, int flag) {
         final View innerView = getLayoutInflater().inflate(R.layout.layout_checklist_dialog, null);
         AlertDialog.Builder ab = new AlertDialog.Builder(this);
         ab.setView(innerView);
+
+        editText = (EditText) innerView.findViewById(R.id.checkListMemo);
 
         cleansingLayout = (LinearLayout) innerView.findViewById(R.id.cleansing_layout);
         clean1 = (LinearLayout) innerView.findViewById(R.id.cleansing_1);
@@ -276,28 +337,44 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), SkincareActivity.class);
-                //startActivity(intent);
-                //setDismiss(mMainDialog);
+                startActivity(intent);
+                setDismiss(mMainDialog);
             }
         });
 
         saveBtn = (FrameLayout) innerView.findViewById(R.id.dialog_saveBtn);
-        if(!isToday(date))
-            saveBtn.setEnabled(false);
-
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(isToday(date))
-                    saveData();
+                    saveTodayResult();
                 else
                     Toast.makeText(getApplicationContext(), "Can save only today's result", Toast.LENGTH_SHORT).show();
                 setDismiss(mMainDialog);
             }
         });
 
-        loadCleansingData(date);
-        loadSkincareData(date);
+        if(!isToday(date)) {
+            // before || after
+            editText.setEnabled(false);
+            saveBtn.setEnabled(false);
+            cbox1.setEnabled(false);
+            cbox2.setEnabled(false);
+            cbox3.setEnabled(false);
+            cbox4.setEnabled(false);
+            sbox1.setEnabled(false);
+            sbox2.setEnabled(false);
+            sbox3.setEnabled(false);
+            sbox4.setEnabled(false);
+        }
+
+        if(flag == SHOW_RESULT){
+            getCleansingResult(date);
+            getSkincareResult(date);
+            getMemo(date);
+        }else{
+            getCheckList();
+        }
 
         saveBtn.requestFocus();
         return  ab.create();
@@ -309,62 +386,77 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // save each select box result whether true or false
-    public void saveData(){
-        ArrayList<User> cleansing = User.load(getApplicationContext(), nowDate, User.CLEANSING_NAME);
-        ArrayList<User> skin = User.load(getApplicationContext(), nowDate, User.SKINCARE_NAME);
-        int count = 0;
-        if(cleansing.size() > 0){
-            for (int i = 0; i < cleansing.size(); i++) {
-                switch (i){
-                    case 0:
-                        User.saveItemCheck(getApplicationContext(), nowDate + "_" + User.CLEANSING_CHECK, ""+i, cbox1.isChecked());
-                        if(cbox1.isChecked())   count++;
-                        break;
-                    case 1:
-                        User.saveItemCheck(getApplicationContext(), nowDate + "_" + User.CLEANSING_CHECK, ""+i, cbox2.isChecked());
-                        if(cbox2.isChecked())   count++;
-                        break;
-                    case 2:
-                        User.saveItemCheck(getApplicationContext(), nowDate + "_" + User.CLEANSING_CHECK, ""+i, cbox3.isChecked());
-                        if(cbox3.isChecked())   count++;
-                        break;
-                    case 3:
-                        User.saveItemCheck(getApplicationContext(), nowDate + "_" + User.CLEANSING_CHECK, ""+i, cbox4.isChecked());
-                        if(cbox4.isChecked())   count++;
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-        if(skin.size() > 0){
-            for (int i = 0; i < skin.size(); i++) {
-                switch (i){
-                    case 0:
-                        User.saveItemCheck(getApplicationContext(), nowDate + "_" + User.SKINCARE_CHECK, ""+i, sbox1.isChecked());
-                        if(sbox1.isChecked())   count++;
-                        break;
-                    case 1:
-                        User.saveItemCheck(getApplicationContext(), nowDate + "_" + User.SKINCARE_CHECK, ""+i, sbox2.isChecked());
-                        if(sbox2.isChecked())   count++;
-                        break;
-                    case 2:
-                        User.saveItemCheck(getApplicationContext(), nowDate + "_" + User.SKINCARE_CHECK, ""+i, sbox3.isChecked());
-                        if(sbox3.isChecked())   count++;
-                        break;
-                    case 3:
-                        User.saveItemCheck(getApplicationContext(), nowDate + "_" + User.SKINCARE_CHECK, ""+i, sbox4.isChecked());
-                        if(sbox4.isChecked())   count++;
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-        saveUserData(count, cleansing.size(), skin.size());
+    public void saveTodayResult(){
+        ArrayList<Boolean> cResult = new ArrayList<>();
+        ArrayList<Boolean> sResult = new ArrayList<>();
+
+        cResult.add(cbox1.isChecked());
+        cResult.add(cbox2.isChecked());
+        cResult.add(cbox3.isChecked());
+        cResult.add(cbox4.isChecked());
+
+        sResult.add(sbox1.isChecked());
+        sResult.add(sbox2.isChecked());
+        sResult.add(sbox3.isChecked());
+        sResult.add(sbox4.isChecked());
+
+        save(null, cResult, sResult);
     }
 
-    public void loadCleansingData(String date){
+    public void getCheckList(){
+        ArrayList<CleansingList> clist = User.getCleansingList(getApplicationContext());
+        if(clist.size() > 0){
+            cleansingLayout.setVisibility(View.VISIBLE);
+            for(int i = 0; i<clist.size(); i++){
+                switch (i) {
+                    case 0:
+                        clean1.setVisibility(View.VISIBLE);
+                        cbox1.setText(clist.get(i).getItem());
+                        break;
+                    case 1:
+                        clean2.setVisibility(View.VISIBLE);
+                        cbox2.setText(clist.get(i).getItem());
+                        break;
+                    case 2:
+                        clean3.setVisibility(View.VISIBLE);
+                        cbox3.setText(clist.get(i).getItem());
+                        break;
+                    case 3:
+                        clean4.setVisibility(View.VISIBLE);
+                        cbox4.setText(clist.get(i).getItem());
+                        break;
+                    default:
+                }
+            }
+        }
+        ArrayList<SkincareList> slist = User.getSkincareList(getApplicationContext());
+        if(slist.size() > 0){
+            skinLayout.setVisibility(View.VISIBLE);
+            for(int i = 0; i<slist.size(); i++){
+                switch (i) {
+                    case 0:
+                        skin1.setVisibility(View.VISIBLE);
+                        sbox1.setText(slist.get(i).getItem());
+                        break;
+                    case 1:
+                        skin2.setVisibility(View.VISIBLE);
+                        sbox2.setText(slist.get(i).getItem());
+                        break;
+                    case 2:
+                        skin3.setVisibility(View.VISIBLE);
+                        sbox3.setText(slist.get(i).getItem());
+                        break;
+                    case 3:
+                        skin4.setVisibility(View.VISIBLE);
+                        sbox4.setText(slist.get(i).getItem());
+                        break;
+                    default:
+                }
+            }
+        }
+    }
+
+    public void getCleansingResult(String date){
         CheckListResultDBHelper dbHelper = new CheckListResultDBHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor c = db.rawQuery("SELECT * FROM checklist_result_table where date='" + date + "'" + " AND type=1", null);
@@ -377,25 +469,21 @@ public class MainActivity extends AppCompatActivity {
                     case 0:
                         clean1.setVisibility(View.VISIBLE);
                         cbox1.setChecked(intToBool(c.getInt(4)));
-                        cbox1.setEnabled(false);
                         cbox1.setText(c.getString(1));
                         break;
                     case 1:
                         clean2.setVisibility(View.VISIBLE);
                         cbox2.setChecked(intToBool(c.getInt(4)));
-                        cbox2.setEnabled(false);
                         cbox2.setText(c.getString(1));
                         break;
                     case 2:
                         clean3.setVisibility(View.VISIBLE);
                         cbox3.setChecked(intToBool(c.getInt(4)));
-                        cbox3.setEnabled(false);
                         cbox3.setText(c.getString(1));
                         break;
                     case 3:
                         clean4.setVisibility(View.VISIBLE);
                         cbox4.setChecked(intToBool(c.getInt(4)));
-                        cbox4.setEnabled(false);
                         cbox4.setText(c.getString(1));
                         break;
                     default:
@@ -406,7 +494,7 @@ public class MainActivity extends AppCompatActivity {
         dbHelper.close();
     }
 
-    public void loadSkincareData(String date){
+    public void getSkincareResult(String date){
         CheckListResultDBHelper dbHelper = new CheckListResultDBHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor c = db.rawQuery("SELECT * FROM checklist_result_table where date='" + date + "'" + " AND type=2", null);
@@ -419,30 +507,37 @@ public class MainActivity extends AppCompatActivity {
                     case 0:
                         skin1.setVisibility(View.VISIBLE);
                         sbox1.setChecked(intToBool(c.getInt(4)));
-                        sbox1.setEnabled(false);
                         sbox1.setText(c.getString(1));
                         break;
                     case 1:
                         skin2.setVisibility(View.VISIBLE);
                         sbox2.setChecked(intToBool(c.getInt(4)));
-                        sbox2.setEnabled(false);
                         sbox2.setText(c.getString(1));
                         break;
                     case 2:
                         skin3.setVisibility(View.VISIBLE);
                         sbox3.setChecked(intToBool(c.getInt(4)));
-                        sbox3.setEnabled(false);
                         sbox3.setText(c.getString(1));
                         break;
                     case 3:
                         skin4.setVisibility(View.VISIBLE);
                         sbox4.setChecked(intToBool(c.getInt(4)));
-                        sbox4.setEnabled(false);
                         sbox4.setText(c.getString(1));
                         break;
                     default:
                 }
             }
+        }
+        dbHelper.close();
+    }
+
+    public void getMemo(String date){
+        MemoDBHelper dbHelper = new MemoDBHelper(this);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM memo_table where date='" + date + "'", null);
+        if(c.getCount() > 0){
+            c.moveToNext();
+            editText.setText(c.getString(1));
         }
         dbHelper.close();
     }
@@ -461,18 +556,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // save cleansing result(count) and display result to date cell clicked
-    public void saveUserData(int count, int cSize, int sSize){
+    public void updateView(int count, int cSize, int sSize){
         if(clickView != null) {
             ImageView imageView = (ImageView) clickView.findViewById(R.id.clean_result);
 
             if (count == 0) {
-                User.saveCheckList(getApplicationContext(), nowDate, User.BAD);
                 imageView.setImageResource(R.mipmap.icon_clean_bad);
             } else if (count == cSize + sSize) {
-                User.saveCheckList(getApplicationContext(), nowDate, User.VERY_GOOD);
                 imageView.setImageResource(R.mipmap.icon_clean_very_good);
-            } else {
-                User.saveCheckList(getApplicationContext(), nowDate, User.GOOD);
+            } else if(count > 0 && count < cSize + sSize){
                 imageView.setImageResource(R.mipmap.icon_clean_good);
             }
             imageView.setVisibility(View.VISIBLE);
