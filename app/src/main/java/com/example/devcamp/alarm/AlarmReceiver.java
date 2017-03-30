@@ -17,22 +17,24 @@ import com.example.devcamp.R;
 public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
+
         Toast.makeText(context, "Alarm!!!", Toast.LENGTH_SHORT).show();
+
         NotificationManager notificationmanager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
         String uri = intent.getStringExtra("url");
         String memo = intent.getStringExtra("memo");
         Uri alarmSound;
-//        Toast.makeText(context, uri, Toast.LENGTH_SHORT).show();
+
         Log.d("url" ,"url : "+ uri);
         Log.d("memo" ,"memo : "+ uri);
+
         if(uri == null){
             alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         }else{
             alarmSound = Uri.parse(uri);
         }
-        //추가 점수1 - 커스텀 notification 사용
-//        RemoteViews customView  = new RemoteViews("com.example.devcamp.alarm", R.layout.customnotiview);
+
         Notification noti = new Notification.Builder(context)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("씻고눕자")

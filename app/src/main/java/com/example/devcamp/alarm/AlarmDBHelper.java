@@ -19,8 +19,9 @@ class AlarmDBHelper  extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
 //        데이터베이스 테이블 생성
-        String createTable = "create table " + TABLE_NAME + " ( _id integer primary key autoincrement, time text, sunday INTEGER, " +
-                "monday INTEGER, tuesday INTEGER, wednesday INTEGER, thursday INTEGER, friday INTEGER, saturday INTEGER, cancel INTEGER, memo text, ringtone text);";
+        String createTable = "create table " + TABLE_NAME + " ( _id integer primary key autoincrement, type text,time text, sunday INTEGER, " +
+                "monday INTEGER, tuesday INTEGER, wednesday INTEGER, thursday INTEGER, friday INTEGER, saturday INTEGER, " +
+                "cancel INTEGER, memo text, ringtone text, ringtone_url text);";
         sqLiteDatabase.execSQL(createTable);
 
 //        샘플 데이터 추가

@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -23,23 +24,23 @@ import java.util.ArrayList;
 
 public class AlarmListActivity extends AppCompatActivity {
 
+    //intent flags
+    private final int INSERT = 0;
+    private final int UPDATE = 1;
 
-    // 멤버 변수 선언
     AlarmDBHelper alarmDBHelper;
     ArrayList<Alarm> alarmList;
 
     int UpdatePosition;
     private AlarmAdapter alarmAdapter;
     private ListView listView;
-    private final int INSERT = 0;
-    private final int UPDATE = 1;
 
 
     Button addAlarm;
-
     TextView textNoti;
 
     Intent intentNoti;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -47,18 +48,19 @@ public class AlarmListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_list);
 
+        addAlarm = (Button)findViewById(R.id.alarmAdd);
         textNoti = (TextView)findViewById(R.id.notiAlarmList);
         intentNoti = getIntent();
+
         if(intentNoti.getStringExtra("alarm").equals("sleep")){
             textNoti.setText("취침 전 알림");
         }else{
             textNoti.setText("세안 전 알림");
         }
-        addAlarm = (Button)findViewById(R.id.alarmAdd);
 
         alarmList = new ArrayList<Alarm>();
         alarmDBHelper = new AlarmDBHelper(this);
-        alarmList = readDatabase();
+        alarmList = readDatabase(intentNoti.getStringExtra("alarm"));
 
         alarmAdapter = new AlarmAdapter(this, R.layout.alarm_item, alarmList);
 
@@ -80,7 +82,6 @@ public class AlarmListActivity extends AppCompatActivity {
                 intent.putExtra("updateFlag", UPDATE);
                 startActivityForResult(intent, 100);
 
-//                Toast.makeText(MainActivity.this, bookList.get(position).getTitle() + " 선택", Toast.LENGTH_SHORT).show();
             }
         };
         listView.setOnItemClickListener(mItemClickListener);
@@ -124,8 +125,8 @@ public class AlarmListActivity extends AppCompatActivity {
                 Dialog dlg = delete_builder.create();
 
                 dlg.setCanceledOnTouchOutside(true);
-                dlg.show();
 
+                dlg.show();
 
                 return true;
             }
@@ -145,6 +146,7 @@ public class AlarmListActivity extends AppCompatActivity {
 
         }
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -152,9 +154,11 @@ public class AlarmListActivity extends AppCompatActivity {
         if(requestCode == 100){     // 수정하고 온 경우
             switch (resultCode){
                 case Activity.RESULT_OK:
+                    Log.d("list", "ok");
                     Alarm mydata = alarmList.get(UpdatePosition); //고칠려고 클릭했던 객체
 
                     Alarm updateData = (Alarm) data.getSerializableExtra("return_data");
+                    mydata.setType(updateData.getType());
                     mydata.setTime(updateData.getTime());
                     mydata.setMonday(updateData.isMonday());
                     mydata.setTuesday(updateData.isTuesday());
@@ -166,10 +170,13 @@ public class AlarmListActivity extends AppCompatActivity {
                     mydata.setCancel(updateData.isCancel());
                     mydata.setMemo(updateData.getMemo());
                     mydata.setRingtone(updateData.getRingtone());
+                    mydata.setRingtone_url(updateData.getRingtone_url());
+
                     alarmAdapter.notifyDataSetChanged();
 
                     break;
                 case Activity.RESULT_CANCELED:
+                    Log.d("list", "cancel");
                     break;
             }
         }
@@ -178,13 +185,17 @@ public class AlarmListActivity extends AppCompatActivity {
 
 
     // DB 읽어오기 메소드 선언
-    private ArrayList<Alarm> readDatabase() {
+    private ArrayList<Alarm> readDatabase(String flag) {
 
         ArrayList<Alarm> list = new ArrayList<Alarm>();
 
         SQLiteDatabase db = alarmDBHelper.getReadableDatabase();
 
-        Cursor cursor = db.query(AlarmDBHelper.TABLE_NAME, null, null, null, null, null, null, null);
+        try {
+//            String[] columns = {"t"}; // or null
+            String selection = "type=?";
+            String[] selectArgs = new String[]{flag};
+            Cursor cursor = db.query (AlarmDBHelper.TABLE_NAME, null, selection, selectArgs, null, null, null, null);
 
 //        SQL 문을 사용하여 데이터 추출
 //        Cursor cursor = db.rawQuery("select * from " + AlarmDBHelper.DB_NAME);
@@ -192,23 +203,29 @@ public class AlarmListActivity extends AppCompatActivity {
         while(cursor.moveToNext()) {
 
             int id = cursor.getInt(0);
-            String time = cursor.getString(1);
-            boolean sunday = (cursor.getInt(2) != 0);
-            boolean monday = (cursor.getInt(3) != 0);
-            boolean tuesday = (cursor.getInt(4) != 0);
-            boolean wednesday = (cursor.getInt(5) != 0);
-            boolean thursday = (cursor.getInt(6) != 0);
-            boolean friday = (cursor.getInt(7) != 0);
-            boolean saturday = (cursor.getInt(8) != 0);
-            boolean cancel = (cursor.getInt(9) != 0);
-            String memo = cursor.getString(10);
-            String ringtone = cursor.getString(11);
-            Alarm newItem = new Alarm(id, time, sunday, monday, tuesday, wednesday, thursday, friday, saturday, cancel, memo, ringtone);
+            String type = cursor.getString(1);
+            String time = cursor.getString(2);
+            boolean sunday = (cursor.getInt(3) != 0);
+            boolean monday = (cursor.getInt(4) != 0);
+            boolean tuesday = (cursor.getInt(5) != 0);
+            boolean wednesday = (cursor.getInt(6) != 0);
+            boolean thursday = (cursor.getInt(7) != 0);
+            boolean friday = (cursor.getInt(8) != 0);
+            boolean saturday = (cursor.getInt(9) != 0);
+            boolean cancel = (cursor.getInt(10) != 0);
+            String memo = cursor.getString(11);
+            String ringtone = cursor.getString(12);
+            String ringtone_url = cursor.getString(13);
+            Alarm newItem = new Alarm(id, type, time, sunday, monday, tuesday, wednesday, thursday, friday, saturday, cancel, memo, ringtone, ringtone_url);
             list.add(newItem);
         }
 
         cursor.close();
         alarmDBHelper.close();
+
+        }catch (Exception e){
+
+        }
 
         return list;
     }

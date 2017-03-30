@@ -1,7 +1,11 @@
 package com.example.devcamp.alarm;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +13,7 @@ import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.devcamp.R;
 import com.example.devcamp.util.Alarm;
@@ -103,19 +108,33 @@ public class AlarmAdapter extends BaseAdapter {
         if(myData.get(position).isSunday()){
             sunday.setTextColor(Color.parseColor("#B5A5F2"));
         }
-        if(myData.get(position).getMemo() != null)
+        if(!(myData.get(position).getMemo().isEmpty()))
             memo.setText(myData.get(position).getMemo());
         else
             memo.setText("씻고 오셨나요?");
-        if(myData.get(position).isCancel())
+
+        Log.d("cancel ", " " + myData.get(position).isCancel());
+        if(!myData.get(position).isCancel())
             btnCancel.setChecked(true);
 
         btnCancel.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
+                if(!isChecked){
+                    Toast.makeText(context, myData.get(position).getMemo(), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent();
+                    PendingIntent sender
+                            = PendingIntent.getBroadcast(context, myData.get(position).get_id(), intent, 0);
+
+                    AlarmManager manager =
+                            (AlarmManager)context
+                                    .getSystemService(Context.ALARM_SERVICE);
+
+                    manager.cancel(sender);
+
 
                 }
+
             }
         });
         btnCancel.setFocusable(false);
