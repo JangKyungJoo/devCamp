@@ -75,6 +75,7 @@ public class AlarmListActivity extends AppCompatActivity {
 
                 UpdatePosition = position;
                 Alarm currentData = alarmList.get(position);
+                Toast.makeText(AlarmListActivity.this, currentData.getTime(), Toast.LENGTH_SHORT).show();
 
                 Intent intent = new Intent(AlarmListActivity.this, AlarmUpdateActivity.class);
                 intent.putExtra("data", currentData);

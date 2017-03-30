@@ -8,6 +8,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -37,13 +38,19 @@ import com.example.devcamp.util.Alarm;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
+
+
 public class AlarmUpdateActivity extends AppCompatActivity {
 
     private static final int MY_PERMISSIONS_REQUEST_WRITE_SETTINGS = 5000;
     private static final int HOUR = 0;
     private static final int MINUTE = 1;
 
-    AlarmManager alarmManager;
+    public static AlarmManager alarmManager;
+    public static PendingIntent[] pendingIntent;
+
+
     TimePicker mTime;
     int hour, minute; //timepicker로 받아온 시,분을 저장
     boolean reviceDataFlag = false;     // 수정하기 위해 넘어온 것인가
@@ -78,11 +85,12 @@ public class AlarmUpdateActivity extends AppCompatActivity {
     TextView textNoti;
     int updateFlag;
     final int INSERT = 0; final int UPDATE = 1;
-
+    public static int insertNum = 1;
     String ringtoneString;
 
     AlarmDBHelper alarmDBHelper;
     Alarm data;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +98,7 @@ public class AlarmUpdateActivity extends AppCompatActivity {
         setContentView(R.layout.activity_alarm_update);
 
         intent = getIntent();
+        pendingIntent = new PendingIntent[100];
 
         type=intent.getStringExtra("alarm");
         textNoti = (TextView) findViewById(R.id.notiAlarm);
@@ -118,6 +127,7 @@ public class AlarmUpdateActivity extends AppCompatActivity {
         alarmMemo = (EditText) findViewById(R.id.alarmMemo);
 
         mTime = (TimePicker) findViewById(R.id.timepicker);
+
         mTime.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker timePicker, int h, int m) {
@@ -227,47 +237,6 @@ public class AlarmUpdateActivity extends AppCompatActivity {
                 Log.d("day", "mon : " + monday + " fri : " + friday);
 
 
-
-                String time;
-                if (hour >= 12)
-                    time = "오후" + (hour - 12) + ":" + minute;
-                else
-                    time = "오전" + hour + ":" + minute;
-                row.put("type", type);
-                row.put("time", time);
-                row.put("sunday", (sunday) ? 1 : 0);
-                row.put("monday", (monday) ? 1 : 0);
-                row.put("tuesday", (tuesday) ? 1 : 0);
-                row.put("wednesday", (wednesday) ? 1 : 0);
-                row.put("thursday", (thursday) ? 1 : 0);
-                row.put("friday", (friday) ? 1 : 0);
-                row.put("saturday", (saturday) ? 1 : 0);
-                row.put("cancel", 0);
-                if (alarmMemo.getText() != null)
-                    row.put("memo", alarmMemo.getText().toString());
-                else
-                    row.put("memo", "");
-                row.put("ringtone", ringtoneString);
-                row.put("ringtone_url", ringtone_url.toString());
-
-
-                if(updateFlag == INSERT) {
-                    Log.d("time", " " + time);
-                    db.insert(AlarmDBHelper.TABLE_NAME, null, row);
-
-                }
-                else if(updateFlag == UPDATE){
-                    String whereClause = "_id=?";
-                    String[] whereArgs = new String[]{Integer.valueOf(data.get_id()).toString()};
-
-                    db.update(AlarmDBHelper.TABLE_NAME, row, whereClause, whereArgs);
-                }
-
-
-                alarmDBHelper.close();
-
-
-
                 if (tvMonday.getCurrentTextColor() == Color.parseColor("#B5A5F2")) {
 //                    monday = true;
                     forday(2);
@@ -291,6 +260,49 @@ public class AlarmUpdateActivity extends AppCompatActivity {
                     forday(1);
                 }
 
+                String time;
+                if (hour >= 12)
+                    time = "오후" + (hour - 12) + ":" + minute;
+                else
+                    time = "오전" + hour + ":" + minute;
+                row.put("type", type);
+                row.put("time", time);
+                row.put("sunday", (sunday) ? 1 : 0);
+                row.put("monday", (monday) ? 1 : 0);
+                row.put("tuesday", (tuesday) ? 1 : 0);
+                row.put("wednesday", (wednesday) ? 1 : 0);
+                row.put("thursday", (thursday) ? 1 : 0);
+                row.put("friday", (friday) ? 1 : 0);
+                row.put("saturday", (saturday) ? 1 : 0);
+                row.put("cancel", 0);
+                if (alarmMemo.getText() != null)
+                    row.put("memo", alarmMemo.getText().toString());
+                else
+                    row.put("memo", "");
+                row.put("ringtone", ringtoneString);
+                if(ringtone_url.toString() != null)
+                    row.put("ringtone_url", ringtone_url.toString());
+                else
+                    row.put("ringtone_url", "");
+
+
+                if(updateFlag == INSERT) {
+                    Toast.makeText(AlarmUpdateActivity.this, hour + " : " + minute, Toast.LENGTH_SHORT).show();
+                    db.insert(AlarmDBHelper.TABLE_NAME, null, row);
+                    insertNum++;
+
+
+                }
+                else if(updateFlag == UPDATE){
+                    String whereClause = "_id=?";
+                    String[] whereArgs = new String[]{Integer.valueOf(data.get_id()).toString()};
+
+                    db.update(AlarmDBHelper.TABLE_NAME, row, whereClause, whereArgs);
+                }
+
+
+                alarmDBHelper.close();
+
                 Alarm return_data = new Alarm(type, time ,monday, tuesday, wednesday, thursday, friday, saturday, true, alarmMemo.getText().toString(), ringtoneString, ringtone_url.toString());
                 Intent insertIntent = new Intent(AlarmUpdateActivity.this, AlarmListActivity.class);
                 insertIntent.putExtra("alarm", type);
@@ -307,14 +319,15 @@ public class AlarmUpdateActivity extends AppCompatActivity {
 
         Intent intent = new Intent();
         intent.setAction("com.example.devcamp.alarm.AlarmReceiver"); //리시버 등록
-        PendingIntent pendingIntent;
-        if(data.get_id() > 0){
-            pendingIntent
-                    = PendingIntent.getBroadcast(this, 100, intent, 0);
+
+        if(data == null){
+            Log.d("insert position", "" + insertNum);
+            pendingIntent[insertNum]
+                    = PendingIntent.getBroadcast(this, insertNum, intent, FLAG_UPDATE_CURRENT);
         }
         else{
-            pendingIntent
-                    = PendingIntent.getBroadcast(this, data.get_id(), intent, 0);
+            pendingIntent[data.get_id()]
+                    = PendingIntent.getBroadcast(this, data.get_id(), intent, FLAG_UPDATE_CURRENT);
         }
 
 
@@ -476,9 +489,6 @@ public class AlarmUpdateActivity extends AppCompatActivity {
         intent.setAction("com.example.devcamp.alarm.AlarmReceiver"); //리시버 등록
 
 
-        //intent 설정 변경 , FLAG_ONE_SHOT 일회성 인텐트
-        PendingIntent pendingIntent
-                = PendingIntent.getBroadcast(this, 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             hour = mTime.getHour();
@@ -500,27 +510,14 @@ public class AlarmUpdateActivity extends AppCompatActivity {
         curTime.set(Calendar.SECOND, 0);
         curTime.set(Calendar.MILLISECOND, 0);
 
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
-                curTime.getTimeInMillis(),   5 * 60 * 1000, pendingIntent);
+        if(data == null)
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+                    curTime.getTimeInMillis(),   24 * 60 * 60 * 1000, pendingIntent[insertNum]);
+        else
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+                    curTime.getTimeInMillis(),   24 * 60 * 60 * 1000, pendingIntent[data.get_id()]);
     }
-    private long setTriggerTime()
-    {
-        // current Time
-        long atime = System.currentTimeMillis();
-        // timepicker
-        Calendar curTime = Calendar.getInstance();
-        curTime.set(Calendar.DAY_OF_WEEK, 3);
-        curTime.set(Calendar.HOUR_OF_DAY, hour);
-        curTime.set(Calendar.MINUTE, minute);
-        curTime.set(Calendar.SECOND, 0);
-        curTime.set(Calendar.MILLISECOND, 0);
-        long btime = curTime.getTimeInMillis();
-        long triggerTime = btime;
-        if (atime > btime)
-            triggerTime += 1000 * 60 * 60 * 24;
 
-        return triggerTime;
-    }
 
     private void showPermissionsDialog() {
         if (Build.VERSION.SDK_INT == 23) {
@@ -595,49 +592,5 @@ public class AlarmUpdateActivity extends AppCompatActivity {
 
         return return_value;
     }
-    // DB 읽어오기 메소드 선언
-    private ArrayList<Alarm> readDatabase(String flag) {
 
-        ArrayList<Alarm> list = new ArrayList<Alarm>();
-
-        SQLiteDatabase db = alarmDBHelper.getReadableDatabase();
-
-        try {
-//            String[] columns = {"t"}; // or null
-            String selection = "type=?";
-            String[] selectArgs = new String[]{flag};
-            Cursor cursor = db.query (AlarmDBHelper.TABLE_NAME, null, selection, selectArgs, null, null, null, null);
-
-//        SQL 문을 사용하여 데이터 추출
-//        Cursor cursor = db.rawQuery("select * from " + AlarmDBHelper.DB_NAME);
-
-            while(cursor.moveToNext()) {
-
-                int id = cursor.getInt(0);
-                String type = cursor.getString(1);
-                String time = cursor.getString(2);
-                boolean sunday = (cursor.getInt(3) != 0);
-                boolean monday = (cursor.getInt(4) != 0);
-                boolean tuesday = (cursor.getInt(5) != 0);
-                boolean wednesday = (cursor.getInt(6) != 0);
-                boolean thursday = (cursor.getInt(7) != 0);
-                boolean friday = (cursor.getInt(8) != 0);
-                boolean saturday = (cursor.getInt(9) != 0);
-                boolean cancel = (cursor.getInt(10) != 0);
-                String memo = cursor.getString(11);
-                String ringtone = cursor.getString(12);
-                String ringtone_url = cursor.getString(13);
-                Alarm newItem = new Alarm(id, type, time, sunday, monday, tuesday, wednesday, thursday, friday, saturday, cancel, memo, ringtone, ringtone_url);
-                list.add(newItem);
-            }
-
-            cursor.close();
-            alarmDBHelper.close();
-
-        }catch (Exception e){
-
-        }
-
-        return list;
-    }
 }

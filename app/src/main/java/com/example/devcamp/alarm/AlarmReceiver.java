@@ -27,13 +27,16 @@ public class AlarmReceiver extends BroadcastReceiver {
         Uri alarmSound;
 
         Log.d("url" ,"url : "+ uri);
-        Log.d("memo" ,"memo : "+ uri);
+        Log.d("memo" ,"memo : "+ memo);
 
         if(uri == null){
             alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         }else{
             alarmSound = Uri.parse(uri);
         }
+
+        if(memo.isEmpty())
+            memo = "씻고 오셨나요?";
 
         Notification noti = new Notification.Builder(context)
                 .setSmallIcon(R.mipmap.ic_launcher)

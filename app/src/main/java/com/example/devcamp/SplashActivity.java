@@ -18,10 +18,10 @@ public class SplashActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        boolean[] week_clicked = {true, true, true, true, true, true, false};
-        Intent broadIntent = new Intent(this, SpecialAlarmService.class);
-        broadIntent.putExtra("week_clicked", week_clicked);
-        startService(broadIntent);
+//        boolean[] week_clicked = {true, true, true, true, true, true, false};
+//        Intent broadIntent = new Intent(this, SpecialAlarmService.class);
+//        broadIntent.putExtra("week_clicked", week_clicked);
+//        startService(broadIntent);
 
 
         Handler hd = new Handler();
