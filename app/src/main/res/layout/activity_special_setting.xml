@@ -35,14 +35,20 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_gravity="center"
         android:gravity="center"
-
         >
         <TextView
             android:id="@+id/txSunday"
-            android:padding="19dp"
+            android:paddingLeft="21dp"
+            android:paddingBottom="19dp"
+            android:paddingTop="19dp"
+            android:paddingRight="19dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="일"
@@ -90,69 +96,93 @@
             android:background="#928FE2"/>
         <TextView
             android:id="@+id/txSaturday"
-            android:padding="19dp"
-
+            android:paddingLeft="19dp"
+            android:paddingBottom="19dp"
+            android:paddingTop="19dp"
+            android:paddingRight="21dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="토"
             android:onClick="onClick"
             android:background="#9898E5"/>
+        </LinearLayout>
     </LinearLayout>
     <LinearLayout
+        android:id="@+id/careViewClick"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="10dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="피부관리 종류"
+            android:text="피부 관리 종류"
             />
         <ImageView
+            android:id="@+id/icon_group_care"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
             android:src ="@drawable/specialcare_icon_02_arrow"/>
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_weight="4">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="각질제거종류"></TextView>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="모공관리"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="미백" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="트러블 진정"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="안티에이징(탄력)"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="기타"
-            />
-    </LinearLayout>
     <View
+        android:id="@+id/careBottomLine"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#000000"/>
     <LinearLayout
+        android:id="@+id/careView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="4"
+        >
+
+    <RadioGroup
+        android:id="@+id/radioGroup1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp">
+        <RadioButton
+            android:id="@+id/option0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="각질제거" />
+        <RadioButton
+            android:id="@+id/option1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="모공관리" />
+        <RadioButton
+            android:id="@+id/option2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="미백" />
+        <RadioButton
+            android:id="@+id/option3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="트러블 진정" />
+        <RadioButton
+            android:id="@+id/option4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="안티에이징(탄력)" />
+        <RadioButton
+            android:id="@+id/option5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="기타" />
+        </RadioGroup>
+    </LinearLayout>
+    <View
+        android:id="@+id/periodTopLine"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="1dp"
+        android:background="#000000"/>
+    <LinearLayout
+        android:id="@+id/periodViewClick"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -162,10 +192,60 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <ImageView
+            android:id="@+id/icon_group_period"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
             android:src ="@drawable/specialcare_icon_03_arrow"
             />
+        </LinearLayout>
+    <View
+        android:id="@+id/periodBottomLine"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#000000"/>
+        <LinearLayout
+            android:id="@+id/periodView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="4"
+            android:visibility="gone">
+        <RadioGroup
+            android:id="@+id/radioGroup2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp">
+            <RadioButton
+                android:id="@+id/periodOption0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="매일" />
+            <RadioButton
+                android:id="@+id/periodOption1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="이틀" />
+            <RadioButton
+                android:id="@+id/periodOption2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="삼일" />
+            <RadioButton
+                android:id="@+id/periodOption3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="일주일" />
+            <RadioButton
+                android:id="@+id/periodOption4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="이주일" />
+            <RadioButton
+                android:id="@+id/periodOption5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="한달" />
+        </RadioGroup>
     </LinearLayout>
 
     <FrameLayout

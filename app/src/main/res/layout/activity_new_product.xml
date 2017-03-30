@@ -3,7 +3,6 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -12,26 +11,33 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="스페셜 피부 관리"
+            android:text="새 제품 시작일"
             android:layout_gravity="center"
             android:textColor="#ffffff"
             android:textSize="20dp"/>
     </FrameLayout>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-        <ListView android:id="@+id/listViewSpecial"
-            android:layout_width="fill_parent"
+
+    <ListView android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="8"
+        />
+
+    <FrameLayout
+        android:id="@+id/addDdayButton"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#8564CC">
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="8"/>
-        <Button
-            android:id="@+id/addDdayButton"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
             android:text="추가하기"
+            android:layout_gravity="center"
             android:textColor="#ffffff"
-            android:background="#8564CC"/>
-    </LinearLayout>
+            android:textSize="20dp"/>
+    </FrameLayout>
+
+
 </LinearLayout>

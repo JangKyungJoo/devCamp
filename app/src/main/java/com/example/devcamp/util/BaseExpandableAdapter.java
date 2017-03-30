@@ -154,7 +154,12 @@ public class BaseExpandableAdapter extends BaseExpandableListAdapter {
         v.findViewById(R.id.icon_arrow).setVisibility(View.GONE);
 
         viewHolder.title_child.setTextColor(Color.parseColor("#A188E5"));
-        if((groupPosition == SettingActivity.SPECIAL_CARE || groupPosition == SettingActivity.SPECIAL_DAY) && childPosition == 1){
+        if((groupPosition == SettingActivity.SPECIAL_CARE) && childPosition == 1){
+            viewHolder.title_child.setText(getChild(groupPosition, childPosition));
+            viewHolder.icon_toggle.setImageResource(R.mipmap.icon_setting_toggle_on);
+            return v;
+        }
+        if(groupPosition == SettingActivity.SPECIAL_DAY && childPosition == 2){
             viewHolder.title_child.setText(getChild(groupPosition, childPosition));
             viewHolder.icon_toggle.setImageResource(R.mipmap.icon_setting_toggle_on);
             return v;
