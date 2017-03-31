@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.devcamp.util.CleansingListDBHelper;
+import com.example.devcamp.entity.CleansingList;
 import com.example.devcamp.MainActivity;
 import com.example.devcamp.R;
 import com.example.devcamp.entity.CheckListResult;
@@ -26,7 +28,6 @@ import com.example.devcamp.util.User;
 
 import java.util.ArrayList;
 
-import static com.example.devcamp.entity.CleansingList.TABLE_NAME;
 
 public class CleansingActivity extends AppCompatActivity{
     ArrayList<CleansingList> list;
@@ -136,12 +137,12 @@ public class CleansingActivity extends AppCompatActivity{
 
     public void updateCheckList(){
         SQLiteDatabase db = cleansingListDBHelper.getWritableDatabase();
-        db.delete(TABLE_NAME, null, null);
+        db.delete(CleansingList.TABLE_NAME, null, null);
 
         for (int i = 0; i < list.size(); i++) {
             ContentValues row = new ContentValues();
             row.put("item", list.get(i).getItem());
-            db.insert(TABLE_NAME, null, row);
+            db.insert(CleansingList.TABLE_NAME, null, row);
         }
 
         Toast.makeText(getApplicationContext(), "Save Success!", Toast.LENGTH_SHORT).show();

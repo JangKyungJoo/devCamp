@@ -12,7 +12,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="스페셜 D-Day"
+            android:text="새 제품 시작일"
             android:layout_gravity="center"
             android:textColor="#ffffff"
             android:textSize="20dp"
@@ -116,7 +116,27 @@
             android:id="@+id/saveButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="저장하기"
+            android:text="수정하기"
+            android:textColor="#ffffff"
+            android:background="#8564CC"
+            android:layout_gravity="center"
+            />
+    </FrameLayout>
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="#ffffff">
+    </View>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#8564CC"
+        android:layout_weight="1">
+        <TextView
+            android:id="@+id/deleteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="삭제하기"
             android:textColor="#ffffff"
             android:background="#8564CC"
             android:layout_gravity="center"/>

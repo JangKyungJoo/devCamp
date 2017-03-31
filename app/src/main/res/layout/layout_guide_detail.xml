@@ -22,7 +22,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="8"
         android:background="@android:color/white"
         android:orientation="vertical">
 
@@ -170,24 +171,25 @@
                 </LinearLayout>
 
             </FrameLayout>
-
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:background="@color/colorPrimary"
-                android:id="@+id/applyBtn">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="적용하기"
-                    android:textSize="@dimen/activity_title_text_size"
-                    android:textStyle="bold" />
-
-            </FrameLayout>
-
         </LinearLayout>
     </ScrollView>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/colorPrimary"
+        android:id="@+id/applyBtn">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="적용하기"
+            android:textColor="@color/white"
+            android:textSize="@dimen/activity_title_text_size"
+            android:textStyle="bold" />
+
+    </FrameLayout>
+
 </LinearLayout>

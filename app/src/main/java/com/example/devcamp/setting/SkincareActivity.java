@@ -69,7 +69,7 @@ public class SkincareActivity extends AppCompatActivity{
                 if(list.size() > 0) {
                     CheckListResultDBHelper dbHelper = new CheckListResultDBHelper(getApplicationContext());
                     SQLiteDatabase db = dbHelper.getReadableDatabase();
-                    Cursor c = db.rawQuery("SELECT * FROM checklist_result_table where date='" + MainActivity.nowDate, null);
+                    Cursor c = db.rawQuery("SELECT * FROM checklist_result_table where date='" + MainActivity.nowDate + "'", null);
                     if(c.getCount() > 0){
                         confirmDialog = createConfirmDialog();
                         confirmDialog.show();

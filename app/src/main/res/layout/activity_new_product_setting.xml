@@ -12,7 +12,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="스페셜 D-Day"
+            android:text="새 제품 시작일"
             android:layout_gravity="center"
             android:textColor="#ffffff"
             android:textSize="20dp"
@@ -26,7 +26,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="D-day 제목"
+            android:text="새 제품명"
             android:textColor="#ffffff"
             android:textSize="20dp"
             android:padding="10dp"
@@ -55,7 +55,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="D-day 날짜"
+            android:text="새 제품 시작 날짜"
             android:textColor="#ffffff"
             android:textSize="20dp"
             android:padding="10dp"
