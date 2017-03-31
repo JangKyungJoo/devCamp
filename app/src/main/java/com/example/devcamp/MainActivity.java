@@ -27,9 +27,7 @@ import com.example.devcamp.setting.CleansingActivity;
 import com.example.devcamp.setting.SettingActivity;
 import com.example.devcamp.setting.SkincareActivity;
 import com.example.devcamp.util.CheckListResultDBHelper;
-import com.example.devcamp.util.CleansingListDBHelper;
 import com.example.devcamp.util.MemoDBHelper;
-import com.example.devcamp.util.SkincareListDBHelper;
 import com.example.devcamp.util.User;
 
 import java.util.ArrayList;
@@ -116,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
                                 mMainDialog.show();
                                 return;
                             }else{
-                                if(getCurrentCheckListCount() > 0) {
+                                if(User.getCurrentCheckListCount(getApplicationContext()) > 0) {
                                     // before save today's result && has checklist
                                     mMainDialog = createDialog(clickDate, SHOW_CHECK_LIST);
                                     clickView = view;
@@ -137,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }else{
                         // clickDate > today
-                        if(getCurrentCheckListCount() > 0) {
+                        if(User.getCurrentCheckListCount(getApplicationContext()) > 0) {
                             mMainDialog = createDialog(clickDate, SHOW_CHECK_LIST);
                             clickView = view;
                             mMainDialog.show();
@@ -168,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
         reportBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), "report", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "준비중입니다..", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -195,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
         String lastUpdateDate = User.getLastUpdateDate(getApplicationContext());
         CheckListResultDBHelper dbHelper = new CheckListResultDBHelper(this);
         dbHelper.getReadableDatabase();
-        int cnt = getCurrentCheckListCount();
+        int cnt = User.getCurrentCheckListCount(getApplicationContext());
         Log.d("TEST", "start date : " + User.getStartDate(getApplicationContext()));
         Log.d("TEST", "last update date : " + lastUpdateDate + ", cnt : " + cnt);
         dbHelper.close();
@@ -273,7 +271,7 @@ public class MainActivity extends AppCompatActivity {
         dbHelper.close();
         memoDBHelper.close();
     }
-
+/*
     public int getCurrentCheckListCount(){
         CleansingListDBHelper cDBHelper = new CleansingListDBHelper(this);
         SkincareListDBHelper sDBHelper = new SkincareListDBHelper(this);
@@ -291,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
 
         return result;
     }
-
+*/
     // create checklist dialog
     private AlertDialog createDialog(final String date, int flag) {
         final View innerView = getLayoutInflater().inflate(R.layout.layout_checklist_dialog, null);
@@ -526,6 +524,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     default:
                 }
+                i++;
             }
         }
         dbHelper.close();
@@ -590,6 +589,17 @@ public class MainActivity extends AppCompatActivity {
         if(now == 13)
             return 1;
         return now;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(User.isUpdate){
+            finish();
+            startActivity(new Intent(this, MainActivity.class));
+            User.isUpdate = false;
+        }
     }
 }
 

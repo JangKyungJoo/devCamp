@@ -2,6 +2,8 @@ package com.example.devcamp.setting;
 
 import android.app.Dialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,7 +19,9 @@ import android.widget.Toast;
 
 import com.example.devcamp.MainActivity;
 import com.example.devcamp.R;
+import com.example.devcamp.entity.CheckListResult;
 import com.example.devcamp.entity.SkincareList;
+import com.example.devcamp.util.CheckListResultDBHelper;
 import com.example.devcamp.util.SkincareListDBHelper;
 import com.example.devcamp.util.User;
 
@@ -32,7 +36,7 @@ public class SkincareActivity extends AppCompatActivity{
     FrameLayout saveBtn, cleansing1, cleansing2, cleansing3, cleansing4, addCleansing;
     TextView textView1, textView2, textView3, textView4;
     ImageView updateItem1, updateItem2, updateItem3, updateItem4;
-    Dialog mMainDialog;
+    Dialog mMainDialog, confirmDialog;
     final int UPDATE = 1;
     final int ADD = 2;
 
@@ -63,21 +67,18 @@ public class SkincareActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 if(list.size() > 0) {
-                    SQLiteDatabase db = skincareListDBHelper.getWritableDatabase();
-                    db.delete(TABLE_NAME, null, null);
-
-                    for (int i = 0; i < list.size(); i++) {
-                        ContentValues row = new ContentValues();
-                        row.put("item", list.get(i).getItem());
-                        db.insert(TABLE_NAME, null, row);
+                    CheckListResultDBHelper dbHelper = new CheckListResultDBHelper(getApplicationContext());
+                    SQLiteDatabase db = dbHelper.getReadableDatabase();
+                    Cursor c = db.rawQuery("SELECT * FROM checklist_result_table where date='" + MainActivity.nowDate, null);
+                    if(c.getCount() > 0){
+                        confirmDialog = createConfirmDialog();
+                        confirmDialog.show();
+                    }else{
+                        updateCheckList();
+                        finish();
                     }
-
-                    skincareListDBHelper.close();
-                    User.setStartDate(getApplicationContext(), MainActivity.nowDate);
-                    User.saveLastUpdateDate(getApplicationContext(), MainActivity.nowDate);
-                    Toast.makeText(getApplicationContext(), "Save Success!", Toast.LENGTH_SHORT).show();
+                    dbHelper.close();
                 }
-                finish();
             }
         });
 
@@ -92,7 +93,7 @@ public class SkincareActivity extends AppCompatActivity{
         addCleansing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (list.size() > 3) {
+                if (list.size() > User.MAX_CHECKLIST_NUM) {
                     Toast.makeText(getApplicationContext(), "MAX NUM is 4", Toast.LENGTH_SHORT).show();
                 }else {
                     mMainDialog = createDialog("", "" + list.size(), ADD);
@@ -141,6 +142,52 @@ public class SkincareActivity extends AppCompatActivity{
             }
         });
 
+    }
+
+    public void updateCheckList(){
+        SQLiteDatabase db = skincareListDBHelper.getWritableDatabase();
+        db.delete(TABLE_NAME, null, null);
+
+        for (int i = 0; i < list.size(); i++) {
+            ContentValues row = new ContentValues();
+            row.put("item", list.get(i).getItem());
+            db.insert(TABLE_NAME, null, row);
+        }
+
+        skincareListDBHelper.close();
+        User.setStartDate(getApplicationContext(), MainActivity.nowDate);
+        User.saveLastUpdateDate(getApplicationContext(), MainActivity.nowDate);
+        Toast.makeText(getApplicationContext(), "Save Success!", Toast.LENGTH_SHORT).show();
+        User.isUpdate = true;
+    }
+
+    public void deleteCheckListResult(){
+        CheckListResultDBHelper dbHelper = new CheckListResultDBHelper(this);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.execSQL("DELETE FROM " + CheckListResult.TABLE_NAME + " WHERE date='" + MainActivity.nowDate + "'");
+        dbHelper.close();
+    }
+
+    private AlertDialog createConfirmDialog(){
+        AlertDialog.Builder ab = new AlertDialog.Builder(this);
+        ab.setTitle("주의");
+        ab.setMessage("체크리스트를 변경하면 오늘 저장한 체크리스트 결과가 초기화됩니다. 변경하시겠습니까?");
+        ab.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                deleteCheckListResult();
+                updateCheckList();
+                setDismiss(confirmDialog);
+            }
+        });
+        ab.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                setDismiss(confirmDialog);
+            }
+        });
+
+        return ab.create();
     }
 
     private AlertDialog createDialog(String text, final String index, final int type) {

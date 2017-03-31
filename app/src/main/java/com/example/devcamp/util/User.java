@@ -12,7 +12,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class User {
-
+    public static boolean isUpdate = false;
+    public static final int MAX_CHECKLIST_NUM = 3;
     public static final String LAST_UPDATE_DATE = "last_update_date";
     public static final String START_DATE = "start_date";
 
@@ -141,5 +142,23 @@ public class User {
         dbHelper.close();
 
         return list;
+    }
+
+    public static int getCurrentCheckListCount(Context context){
+        CleansingListDBHelper cDBHelper = new CleansingListDBHelper(context);
+        SkincareListDBHelper sDBHelper = new SkincareListDBHelper(context);
+
+        SQLiteDatabase db1 = cDBHelper.getReadableDatabase();
+        SQLiteDatabase db2 = sDBHelper.getReadableDatabase();
+
+        Cursor c1 = db1.query(CleansingList.TABLE_NAME, null, null, null, null, null, null, null);
+        Cursor c2 = db2.query(SkincareList.TABLE_NAME, null, null, null, null, null, null, null);
+
+        int result = c1.getCount() + c2.getCount();
+
+        cDBHelper.close();
+        sDBHelper.close();
+
+        return result;
     }
 }

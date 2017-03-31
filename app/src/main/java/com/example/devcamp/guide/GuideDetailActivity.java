@@ -1,20 +1,47 @@
 package com.example.devcamp.guide;
 
+import android.app.Dialog;
+import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.devcamp.MainActivity;
 import com.example.devcamp.R;
+import com.example.devcamp.entity.CheckListResult;
+import com.example.devcamp.entity.CleansingList;
+import com.example.devcamp.entity.SkincareList;
+import com.example.devcamp.util.CheckListResultDBHelper;
+import com.example.devcamp.util.CleansingListDBHelper;
+import com.example.devcamp.util.SkincareListDBHelper;
+import com.example.devcamp.util.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GuideDetailActivity extends AppCompatActivity {
-
+    String[] cstr1 = {"저자극성의 폼클렌징 하나만 사용하기", "미온수로 먼저 세안을 한 뒤 클렌징하기", "수분 함량이 높은 클렌징 제품 사용하기"};
+    String[] sstr1 = {"눈가, 입가 등은 아이크림 사용", "세안 후 마스크팩이나 영양 크림 사용", "볼, 이마 등의 부위에 부분적으로 고보습 크림 사용"};
+    String[] cstr2 = {"이중 세안하기", "1~2분 내로 피지를 잡아주는 제품을 사용", "AHA 및 BHA 성분 클렌징 제품 사용"};
+    String[] sstr2 = {"저자극 스크럽제로 각질을 관리", "가볍고 흡수력이 높은 수분 크림 사용", "쿨링 기능이 있는 마스크팩 사용"};
+    String[] cstr3 = {"자극이 적은 클렌징", "U존과 T존을 구분하여 클렌징", "립앤 아이 리무버 사용"};
+    String[] sstr3 = {"토너로 꼭 정리해주기", "로션 꼭 사용하기 (유수분 벨런스)", "모공 관리 제품 사용", "건조한 부분에만 보습 크림 덧 바르기"};
+    String[] cstr4 = {"자극이 적은 클렌징 제품 사용하기", "알레르기 테스트를 거친 제품인지 확인하기"};
+    String[] sstr4 = {"스킨은 알코올 프리 제품 사용하기", "밀크클렌징제품 사용하기", "수분 보습 충분히 해주기", "피부자극 완화제품 선택하기"};
+    String[] now1, now2;
+    FrameLayout applyBtn;
     Intent intent;
     String tagName;
+    Dialog confirmDialog;
     TextView guideDetail_tag, guideDetail_question, guideDetail_description, guideDetail_checkListTitle;
 
     ListView cleansingListView, skincareListView;
@@ -47,7 +74,98 @@ public class GuideDetailActivity extends AppCompatActivity {
         guideDetail_question.setText(tagName + "이란?");
         guideDetail_description.setText(description_list.get(tagName));
         guideDetail_checkListTitle.setText(tagName + " 전용 체크리스트");
+        applyBtn = (FrameLayout) findViewById(R.id.applyBtn);
 
+        applyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(User.getCurrentCheckListCount(getApplicationContext()) > 0){
+                    confirmDialog = createConfirmDialog();
+                    confirmDialog.show();
+                }
+            }
+        });
+
+    }
+
+    private AlertDialog createConfirmDialog(){
+        AlertDialog.Builder ab = new AlertDialog.Builder(this);
+        ab.setTitle("주의");
+        ab.setMessage("체크리스트 목록과 오늘 저장한 체크리스트 결과가 초기화됩니다. 적용하시겠습니까?");
+        ab.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                deleteCheckListResult();
+                updateCheckList();
+                setDismiss(confirmDialog);
+            }
+        });
+        ab.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                setDismiss(confirmDialog);
+            }
+        });
+
+        return ab.create();
+    }
+
+    public void updateCheckList(){
+        CleansingListDBHelper cdbHelper = new CleansingListDBHelper(this);
+        SkincareListDBHelper sdbHelper = new SkincareListDBHelper(this);
+
+        SQLiteDatabase cdb = cdbHelper.getWritableDatabase();
+        SQLiteDatabase sdb = sdbHelper.getWritableDatabase();
+
+        cdb.delete(CleansingList.TABLE_NAME, null, null);
+        sdb.delete(SkincareList.TABLE_NAME, null, null);
+
+        if(tagName.equals("지성")){
+            now1 = cstr1;
+            now2 = sstr1;
+        }else if(tagName.equals("건성")){
+            now1 = cstr2;
+            now2 = sstr2;
+        }else if(tagName.equals("복합성")){
+            now1 = cstr3;
+            now2 = sstr3;
+        }else{
+            now1 = cstr4;
+            now2 = sstr4;
+        }
+
+        for(int i = 0; i<now1.length; i++){
+            ContentValues row = new ContentValues();
+            row.put("item", now1[i]);
+            Log.d("TEST", "insert " + now1[i]);
+            cdb.insert(CleansingList.TABLE_NAME, null, row);
+        }
+
+        for(int i = 0; i<now2.length; i++){
+            ContentValues row = new ContentValues();
+            row.put("item", now2[i]);
+            Log.d("TEST", "insert2 " + now2[i]);
+            sdb.insert(SkincareList.TABLE_NAME, null, row);
+        }
+
+        Toast.makeText(getApplicationContext(), "Save Success!", Toast.LENGTH_SHORT).show();
+        User.setStartDate(getApplicationContext(), MainActivity.nowDate);
+        User.saveLastUpdateDate(getApplicationContext(), MainActivity.nowDate);
+        cdbHelper.close();
+        sdbHelper.close();
+        User.isUpdate = true;
+    }
+
+    public void deleteCheckListResult(){
+        CheckListResultDBHelper dbHelper = new CheckListResultDBHelper(this);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.execSQL("DELETE FROM " + CheckListResult.TABLE_NAME + " WHERE date='" + MainActivity.nowDate + "'");
+        dbHelper.close();
+    }
+
+    private void setDismiss(Dialog dialog){
+        if(dialog!=null&&dialog.isShowing())
+            dialog.dismiss();
     }
 
     public void fvbi(){
