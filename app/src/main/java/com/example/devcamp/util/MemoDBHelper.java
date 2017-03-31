@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.devcamp.entity.Memo;
+import com.example.devcamp.Entity.Memo;
 
 public class MemoDBHelper extends SQLiteOpenHelper{
 

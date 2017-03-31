@@ -1,4 +1,4 @@
-package com.example.devcamp.entity;
+package com.example.devcamp.Entity;
 
 import java.io.Serializable;
 

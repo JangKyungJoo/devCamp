@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import static com.example.devcamp.entity.SkincareList.TABLE_NAME;
+import static com.example.devcamp.Entity.SkincareList.TABLE_NAME;
 
 public class SkincareListDBHelper extends SQLiteOpenHelper{
 

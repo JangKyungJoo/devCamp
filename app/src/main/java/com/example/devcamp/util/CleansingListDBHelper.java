@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import static com.example.devcamp.entity.CleansingList.TABLE_NAME;
+import static com.example.devcamp.Entity.CleansingList.TABLE_NAME;
 
 public class CleansingListDBHelper extends SQLiteOpenHelper {
 

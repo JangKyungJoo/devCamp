@@ -4,21 +4,17 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.devcamp.R;
 import com.example.devcamp.util.Special;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 public class SpecialSettingActivity extends AppCompatActivity {
 

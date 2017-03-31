@@ -15,14 +15,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.devcamp.util.CleansingListDBHelper;
-import com.example.devcamp.entity.CleansingList;
+import com.example.devcamp.Entity.CleansingList;
 import com.example.devcamp.MainActivity;
 import com.example.devcamp.R;
 import com.example.devcamp.util.User;
 
 import java.util.ArrayList;
 
-import static com.example.devcamp.entity.CleansingList.TABLE_NAME;
+import static com.example.devcamp.Entity.CleansingList.TABLE_NAME;
 
 public class CleansingActivity extends AppCompatActivity{
     ArrayList<CleansingList> list;

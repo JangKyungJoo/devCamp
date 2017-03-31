@@ -5,8 +5,8 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.devcamp.entity.CleansingList;
-import com.example.devcamp.entity.SkincareList;
+import com.example.devcamp.Entity.CleansingList;
+import com.example.devcamp.Entity.SkincareList;
 
 import java.util.ArrayList;
 import java.util.Calendar;

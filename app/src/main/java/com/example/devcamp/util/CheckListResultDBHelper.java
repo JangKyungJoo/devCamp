@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import static com.example.devcamp.entity.CheckListResult.TABLE_NAME;
+import static com.example.devcamp.Entity.CheckListResult.TABLE_NAME;
 
 
 public class CheckListResultDBHelper extends SQLiteOpenHelper{

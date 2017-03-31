@@ -18,10 +18,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.devcamp.entity.CheckListResult;
-import com.example.devcamp.entity.CleansingList;
-import com.example.devcamp.entity.Memo;
-import com.example.devcamp.entity.SkincareList;
+import com.example.devcamp.Entity.CheckListResult;
+import com.example.devcamp.Entity.CleansingList;
+import com.example.devcamp.Entity.Memo;
+import com.example.devcamp.Entity.SkincareList;
 import com.example.devcamp.guide.GuideActivity;
 import com.example.devcamp.setting.CleansingActivity;
 import com.example.devcamp.setting.SettingActivity;

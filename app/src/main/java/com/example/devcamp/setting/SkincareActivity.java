@@ -17,13 +17,13 @@ import android.widget.Toast;
 
 import com.example.devcamp.MainActivity;
 import com.example.devcamp.R;
-import com.example.devcamp.entity.SkincareList;
+import com.example.devcamp.Entity.SkincareList;
 import com.example.devcamp.util.SkincareListDBHelper;
 import com.example.devcamp.util.User;
 
 import java.util.ArrayList;
 
-import static com.example.devcamp.entity.SkincareList.TABLE_NAME;
+import static com.example.devcamp.Entity.SkincareList.TABLE_NAME;
 
 public class SkincareActivity extends AppCompatActivity{
 
