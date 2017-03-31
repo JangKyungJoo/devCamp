@@ -1,6 +1,7 @@
 package com.example.devcamp.alarm;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.ContentValues;
@@ -9,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.media.AudioManager;
@@ -33,7 +35,11 @@ import android.widget.Toast;
 import com.example.devcamp.R;
 import com.example.devcamp.util.Alarm;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+
+import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
+
 
 public class AlarmUpdateActivity extends AppCompatActivity {
 
@@ -41,15 +47,17 @@ public class AlarmUpdateActivity extends AppCompatActivity {
     private static final int HOUR = 0;
     private static final int MINUTE = 1;
 
-    AlarmManager alarmManager;
+    public static AlarmManager alarmManager;
+    public static PendingIntent[] pendingIntent;
+
+
     TimePicker mTime;
     int hour, minute; //timepicker로 받아온 시,분을 저장
     boolean reviceDataFlag = false;     // 수정하기 위해 넘어온 것인가
-    Uri uri;
+    Uri ringtone_url;
+    String type;
 
     Intent intent;
-    SharedPreferences alarmDay;
-    SharedPreferences.Editor editor;
 
     TextView tvSunday;
     TextView tvMonday;
@@ -67,7 +75,6 @@ public class AlarmUpdateActivity extends AppCompatActivity {
     EditText alarmMemo;
     Button btnAlarm;
 
-    Calendar calSet;
     boolean monday = false;
     boolean tuesday = false;
     boolean wednesday = false;
@@ -78,11 +85,12 @@ public class AlarmUpdateActivity extends AppCompatActivity {
     TextView textNoti;
     int updateFlag;
     final int INSERT = 0; final int UPDATE = 1;
-
+    public static int insertNum = 1;
     String ringtoneString;
 
     AlarmDBHelper alarmDBHelper;
     Alarm data;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +98,9 @@ public class AlarmUpdateActivity extends AppCompatActivity {
         setContentView(R.layout.activity_alarm_update);
 
         intent = getIntent();
+        pendingIntent = new PendingIntent[100];
 
+        type=intent.getStringExtra("alarm");
         textNoti = (TextView) findViewById(R.id.notiAlarm);
 
         if (intent.getStringExtra("alarm").equals("sleep")) {
@@ -116,32 +126,8 @@ public class AlarmUpdateActivity extends AppCompatActivity {
 
         alarmMemo = (EditText) findViewById(R.id.alarmMemo);
 
-        alarmDay = getSharedPreferences("day", MODE_PRIVATE);
-        editor = alarmDay.edit();
-
-        editor.putString("sunday", "false");
-        editor.commit();
-
-        editor.putString("monday", "false");
-        editor.commit();
-
-        editor.putString("tuesday", "false");
-        editor.commit();
-
-        editor.putString("wednesday", "false");
-        editor.commit();
-
-        editor.putString("thursday", "false");
-        editor.commit();
-
-        editor.putString("friday", "false");
-        editor.commit();
-
-        editor.putString("saturday", "false");
-        editor.commit();
-
-
         mTime = (TimePicker) findViewById(R.id.timepicker);
+
         mTime.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker timePicker, int h, int m) {
@@ -161,6 +147,10 @@ public class AlarmUpdateActivity extends AppCompatActivity {
 
             alarmMemo.setText(data.getMemo());
 
+            type = data.getType();
+
+            ringtone_url = Uri.parse(data.getRingtone_url());
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (data.getTime().contains("오후"))
                     mTime.setHour(refineTime(data.getTime().substring(2), HOUR) + 12);
@@ -177,24 +167,31 @@ public class AlarmUpdateActivity extends AppCompatActivity {
 
             if (data.isMonday()) {
                 tvMonday.setTextColor(Color.parseColor("#B5A5F2"));
+                monday = true;
             }
             if (data.isTuesday()) {
                 tvTuesday.setTextColor(Color.parseColor("#B5A5F2"));
+                tuesday = true;
             }
             if (data.isWednesday()) {
                 tvWednesday.setTextColor(Color.parseColor("#B5A5F2"));
+                wednesday = true;
             }
             if (data.isThursday()) {
                 tvThursday.setTextColor(Color.parseColor("#B5A5F2"));
+                thursday = true;
             }
             if (data.isFriday()) {
                 tvFriday.setTextColor(Color.parseColor("#B5A5F2"));
+                friday = true;
             }
             if (data.isSaturday()) {
                 tvSaturday.setTextColor(Color.parseColor("#B5A5F2"));
+                saturday = true;
             }
             if (data.isSunday()) {
                 tvSunday.setTextColor(Color.parseColor("#B5A5F2"));
+                sunday = true;
             }
         }
 
@@ -230,44 +227,45 @@ public class AlarmUpdateActivity extends AppCompatActivity {
             }
         });
 
+
         btnAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SQLiteDatabase db = alarmDBHelper.getWritableDatabase();
                 ContentValues row = new ContentValues();
 
+                Log.d("day", "mon : " + monday + " fri : " + friday);
 
-                if (alarmDay.getString("monday", "").equals("true")) {
-                    monday = true;
+
+                if (tvMonday.getCurrentTextColor() == Color.parseColor("#B5A5F2")) {
+//                    monday = true;
                     forday(2);
-                } else if (alarmDay.getString("tuesday", "").equals("true")) {
-                    tuesday = true;
+                } else if (tvTuesday.getCurrentTextColor() == Color.parseColor("#B5A5F2")) {
+//                    tuesday = true;
                     forday(3);
-                } else if (alarmDay.getString("wednesday", "").equals("true")) {
-                    wednesday = true;
+                } else if (tvWednesday.getCurrentTextColor() == Color.parseColor("#B5A5F2")) {
+//                    wednesday = true;
                     forday(4);
-                } else if (alarmDay.getString("thursday", "").equals("true")) {
-                    thursday = true;
+                } else if (tvThursday.getCurrentTextColor() == Color.parseColor("#B5A5F2")) {
+//                    thursday = true;
                     forday(5);
-                } else if (alarmDay.getString("friday", "").equals("true")) {
-                    friday = true;
+                } else if (tvFriday.getCurrentTextColor() == Color.parseColor("#B5A5F2")) {
+//                    friday = true;
                     forday(6);
-                } else if (alarmDay.getString("saturday", "").equals("true")) {
-                    saturday = true;
+                } else if (tvSaturday.getCurrentTextColor() == Color.parseColor("#B5A5F2")) {
+//                    saturday = true;
                     forday(7);
-                } else if (alarmDay.getString("sunday", "").equals("true")) {
-                    sunday = true;
+                } else if (tvSunday.getCurrentTextColor() == Color.parseColor("#B5A5F2")) {
+//                    sunday = true;
                     forday(1);
                 }
-
-
-                //                1. DB 관련 메소드를 사용하여 데이터 추가
 
                 String time;
                 if (hour >= 12)
                     time = "오후" + (hour - 12) + ":" + minute;
                 else
                     time = "오전" + hour + ":" + minute;
+                row.put("type", type);
                 row.put("time", time);
                 row.put("sunday", (sunday) ? 1 : 0);
                 row.put("monday", (monday) ? 1 : 0);
@@ -276,32 +274,40 @@ public class AlarmUpdateActivity extends AppCompatActivity {
                 row.put("thursday", (thursday) ? 1 : 0);
                 row.put("friday", (friday) ? 1 : 0);
                 row.put("saturday", (saturday) ? 1 : 0);
-
                 row.put("cancel", 0);
                 if (alarmMemo.getText() != null)
                     row.put("memo", alarmMemo.getText().toString());
                 else
-                    row.put("memo", "씻고 왔나요?");
+                    row.put("memo", "");
                 row.put("ringtone", ringtoneString);
+                if(ringtone_url.toString() != null)
+                    row.put("ringtone_url", ringtone_url.toString());
+                else
+                    row.put("ringtone_url", "");
 
-                if(updateFlag == INSERT)
+
+                if(updateFlag == INSERT) {
+                    Toast.makeText(AlarmUpdateActivity.this, hour + " : " + minute, Toast.LENGTH_SHORT).show();
                     db.insert(AlarmDBHelper.TABLE_NAME, null, row);
-                else if(updateFlag == UPDATE)
-//                    여기 손 봐야 됩니다 ㅠㅠㅠㅠ
-//                    db.update(AlarmDBHelper.TABLE_NAME, row, "id=?", new Integer(data.get_id()));
+                    insertNum++;
 
 
-//                db.execSQL("insert into " + AlarmDBHelper.TABLE_NAME + " values (null, '"+time+"', '"+ monday+"', '"+ tuesday+"','"+wednesday
-//                        +"');");
-                // 2. SQL을 사용하여 데이터추가
-//                db.execSQL("insert into " + myDBHelper.TABLE_NAME + " values ( null, '"
-//                        + title + "', '" + phone + "');");
+                }
+                else if(updateFlag == UPDATE){
+                    String whereClause = "_id=?";
+                    String[] whereArgs = new String[]{Integer.valueOf(data.get_id()).toString()};
+
+                    db.update(AlarmDBHelper.TABLE_NAME, row, whereClause, whereArgs);
+                }
+
 
                 alarmDBHelper.close();
 
+                Alarm return_data = new Alarm(type, time ,monday, tuesday, wednesday, thursday, friday, saturday, true, alarmMemo.getText().toString(), ringtoneString, ringtone_url.toString());
                 Intent insertIntent = new Intent(AlarmUpdateActivity.this, AlarmListActivity.class);
-                insertIntent.putExtra("alarm", intent.getStringExtra("alarm"));
-                setResult(100, insertIntent);
+                insertIntent.putExtra("alarm", type);
+                insertIntent.putExtra("return_data", return_data);
+                setResult(Activity.RESULT_OK, insertIntent);
                 finish();
 //                break;
             }
@@ -313,157 +319,88 @@ public class AlarmUpdateActivity extends AppCompatActivity {
 
         Intent intent = new Intent();
         intent.setAction("com.example.devcamp.alarm.AlarmReceiver"); //리시버 등록
-        PendingIntent pendingIntent
-                = PendingIntent.getBroadcast(this, 100, intent, 0);
 
-        alarmDay = getSharedPreferences("day", MODE_PRIVATE);
-        editor = alarmDay.edit();
+        if(data == null){
+            Log.d("insert position", "" + insertNum);
+            pendingIntent[insertNum]
+                    = PendingIntent.getBroadcast(this, insertNum, intent, FLAG_UPDATE_CURRENT);
+        }
+        else{
+            pendingIntent[data.get_id()]
+                    = PendingIntent.getBroadcast(this, data.get_id(), intent, FLAG_UPDATE_CURRENT);
+        }
+
+
 
         switch (v.getId()) {
-//            case R.id.btnAlarm:
-
-////                alarmManager.set(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);  //알람 등록(일회성)
-//
-//                //추가점수2 - 반복적 알람 설정
-//                alarmManager.setRepeating(AlarmManager.RTC, cal.getTimeInMillis(), 300000, pendingIntent); //반복적 알람1, 5분마다 알람 반복
-////                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 300000, pendingIntent); //반복적 알람2, 앱이 꺼진 상태에서도 장비를 깨운다.
-
-//                SQLiteDatabase db = alarmDBHelper.getWritableDatabase();
-//                ContentValues row = new ContentValues();
-//                row.put("time", calSet.getTimeInMillis() );
-//
-//                if (alarmDay.getString("monday", "").equals("true")) {
-//                    monday = true;
-//                    forday(2);
-//                } else if (alarmDay.getString("tuesday", "").equals("true")) {
-//                    tuesday = true;
-//                    forday(3);
-//                } else if (alarmDay.getString("wednesday", "").equals("true")) {
-//                    wednesday = true;
-//                    forday(4);
-//                } else if (alarmDay.getString("thursday", "").equals("true")) {
-//                    thursday = true;
-//                    forday(5);
-//                } else if (alarmDay.getString("friday", "").equals("true")) {
-//                    friday = true;
-//                    forday(6);
-//                } else if (alarmDay.getString("saturday", "").equals("true")) {
-//                    saturday = true;
-//                    forday(7);
-//                } else if (alarmDay.getString("sunday", "").equals("true")) {
-//                    sunday = true;
-//                    forday(1);
-//                }
-//
-//
-//
-//                //                1. DB 관련 메소드를 사용하여 데이터 추가
-//
-//                row.put("sunday", (sunday)? 1:0);
-//                row.put("monday", (monday)? 1 : 0);
-//                row.put("tuesday", (tuesday)? 1 : 0);
-//                row.put("wednesday", (wednesday)? 1:0);
-//                row.put("thursday", (thursday)? 1:0);
-//                row.put("friday", (friday)? 1:0);
-//                row.put("saturday", (saturday)? 1:0);
-//
-//                row.put("cancel", 0);
-//                row.put("memo", alarmMemo.getText().toString());
-//                row.put("ringtone", ringtoneString);
-//
-//                db.insert(AlarmDBHelper.TABLE_NAME, null, row);
-////                db.execSQL("insert into " + AlarmDBHelper.TABLE_NAME + " values (null, '"+time+"', '"+ monday+"', '"+ tuesday+"','"+wednesday
-////                        +"');");
-//                // 2. SQL을 사용하여 데이터추가
-////                db.execSQL("insert into " + myDBHelper.TABLE_NAME + " values ( null, '"
-////                        + title + "', '" + phone + "');");
-//
-//                alarmDBHelper.close();
-//
-//                Intent insertIntent = new Intent(this, AlarmListActivity.class);
-//                startActivity(insertIntent);
-//
-//                break;
-//            case R.id.btnCancel:
-//                alarmManager.cancel(pendingIntent); //알람을 끈다
-//                break;
             case R.id.txSunday:
-                Toast.makeText(this, "sunday", Toast.LENGTH_SHORT).show();
-                if (alarmDay.getString("sunday", "").equals("false")) {
-                    editor.putString("sunday", "true");
-                    editor.commit();
-                    tvSunday.setTextColor(Color.parseColor("#B5A5F2"));
-                } else {
-                    editor.putString("sunday", "false");
-                    editor.commit();
 
+                if (tvSunday.getCurrentTextColor() != Color.parseColor("#B5A5F2") ) {
+                    tvSunday.setTextColor(Color.parseColor("#B5A5F2"));
+                    sunday = true;
+                }
+                else {
                     tvSunday.setTextColor(Color.GRAY);
+                    sunday = false;
                 }
                 break;
+
             case R.id.txMonday:
-                if (alarmDay.getString("monday", "").equals("false")) {
-                    editor.putString("monday", "true");
-                    editor.commit();
+
+                if (tvMonday.getCurrentTextColor() != Color.parseColor("#B5A5F2") ) {
                     tvMonday.setTextColor(Color.parseColor("#B5A5F2"));
+                    monday = true;
                 } else {
-                    editor.putString("monday", "false");
-                    editor.commit();
                     tvMonday.setTextColor(Color.GRAY);
+                    monday = false;
                 }
                 break;
+
             case R.id.txTuesday:
-                if (alarmDay.getString("tuesday", "").equals("false")) {
-                    editor.putString("tuesday", "true");
-                    editor.commit();
+                if (tvTuesday.getCurrentTextColor() != Color.parseColor("#B5A5F2") ) {
                     tvTuesday.setTextColor(Color.parseColor("#B5A5F2"));
+                    tuesday = true;
                 } else {
-                    editor.putString("tuesday", "false");
-                    editor.commit();
                     tvTuesday.setTextColor(Color.GRAY);
+                    tuesday = false;
                 }
+
                 break;
             case R.id.txWednesday:
-                if (alarmDay.getString("wednesday", "").equals("false")) {
-                    editor.putString("wednesday", "true");
-                    editor.commit();
+                if (tvWednesday.getCurrentTextColor() != Color.parseColor("#B5A5F2") ) {
                     tvWednesday.setTextColor(Color.parseColor("#B5A5F2"));
+                    wednesday = true;
                 } else {
-                    editor.putString("wednesday", "false");
-                    editor.commit();
                     tvWednesday.setTextColor(Color.GRAY);
+                    wednesday = false;
                 }
 
                 break;
             case R.id.txThursday:
-                if (alarmDay.getString("thursday", "").equals("false")) {
-                    editor.putString("thursday", "true");
-                    editor.commit();
+                if (tvThursday.getCurrentTextColor() != Color.parseColor("#B5A5F2") ) {
                     tvThursday.setTextColor(Color.parseColor("#B5A5F2"));
+                    thursday = true;
                 } else {
-                    editor.putString("thursday", "false");
-                    editor.commit();
                     tvThursday.setTextColor(Color.GRAY);
+                    thursday = false;
                 }
-
                 break;
             case R.id.txFriday:
-                if (alarmDay.getString("friday", "").equals("false")) {
-                    editor.putString("friday", "true");
-                    editor.commit();
+                if (tvFriday.getCurrentTextColor() != Color.parseColor("#B5A5F2") ) {
                     tvFriday.setTextColor(Color.parseColor("#B5A5F2"));
+                    friday = true;
                 } else {
-                    editor.putString("friday", "false");
                     tvFriday.setTextColor(Color.GRAY);
+                    friday = false;
                 }
                 break;
             case R.id.txSaturday:
-                if (alarmDay.getString("saturday", "").equals("false")) {
-                    editor.putString("saturday", "true");
+                if (tvSaturday.getCurrentTextColor() != Color.parseColor("#B5A5F2") ) {
                     tvSaturday.setTextColor(Color.parseColor("#B5A5F2"));
+                    saturday = true;
                 } else {
-                    editor.putString("saturday", "false");
-                    editor.commit();
                     tvSaturday.setTextColor(Color.GRAY);
+                    saturday = sunday;
                 }
                 break;
             case R.id.alarmWayButton:
@@ -497,10 +434,12 @@ public class AlarmUpdateActivity extends AppCompatActivity {
         switch (requestCode) {
             case 0:             // 등록
                 try {
-                    uri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
-                    if (uri != null) {
+                    ringtone_url = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+                    Log.d("ringtone_url", "ringtone_url : " + ringtone_url + "auth : " + ringtone_url.getAuthority());
+
+                    if (ringtone_url != null) {
                         try {
-                            ringtoneString = RingtoneManager.getRingtone(this, uri).getTitle(this);
+                            ringtoneString = RingtoneManager.getRingtone(this, ringtone_url).getTitle(this);
                             alarmVol.setVisibility(View.VISIBLE);
                         } catch (final Exception e) {
                             ringtoneString = "없음";
@@ -510,7 +449,7 @@ public class AlarmUpdateActivity extends AppCompatActivity {
                         }
                         alarmWay.setText(ringtoneString);
                     }
-                    RingtoneManager.setActualDefaultRingtoneUri(this, RingtoneManager.TYPE_RINGTONE, uri);
+                    RingtoneManager.setActualDefaultRingtoneUri(this, RingtoneManager.TYPE_RINGTONE, ringtone_url);
 
                 } catch (NullPointerException e) {
 
@@ -538,28 +477,19 @@ public class AlarmUpdateActivity extends AppCompatActivity {
     public void forday(int week) {
         String memo;
         Intent intent = new Intent();
-        intent.putExtra("url", uri.toString());
+        intent.putExtra("url", ringtone_url.toString());
 
-        Log.d("main", "memobefore : " + alarmMemo.getText().toString());
-        if (alarmMemo.getText().toString() == null) {
+        if (alarmMemo.getText().toString().isEmpty()) {
             memo = "씻고 왔나요?";
         } else {
             memo = alarmMemo.getText().toString();
         }
-        Log.d("main", "memo : " + alarmMemo.getText().toString());
+
         intent.putExtra("memo", alarmMemo.getText().toString());
         intent.setAction("com.example.devcamp.alarm.AlarmReceiver"); //리시버 등록
 
-//        Toast.makeText(this, "url: "+uri, Toast.LENGTH_SHORT).show();
-        Log.d("main", "url: " + uri);
-
-        //intent 설정 변경 , FLAG_ONE_SHOT 일회성 인텐트
-        PendingIntent pendingIntent
-                = PendingIntent.getBroadcast(this, 100, intent, PendingIntent.FLAG_ONE_SHOT);
 
 
-        calSet = Calendar.getInstance();
-        calSet.set(Calendar.DAY_OF_WEEK, week);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             hour = mTime.getHour();
             minute = mTime.getMinute();
@@ -570,9 +500,24 @@ public class AlarmUpdateActivity extends AppCompatActivity {
             minute = mTime.getCurrentMinute();
         }
 
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
-                calSet.getTimeInMillis(), 1 * 60 * 60 * 1000, pendingIntent);
+        Calendar curTime = Calendar.getInstance();
+//        curTime.set(Calendar.YEAR, curTime.get(Calendar.YEAR));
+//        curTime.set(Calendar.MONTH, curTime.get(Calendar.MONTH));
+        Log.d("alarm time", "day : " + week + " hour : " + hour + " minute : " + minute);
+        curTime.set(Calendar.DAY_OF_WEEK, week);
+        curTime.set(Calendar.HOUR_OF_DAY, hour);
+        curTime.set(Calendar.MINUTE, minute);
+        curTime.set(Calendar.SECOND, 0);
+        curTime.set(Calendar.MILLISECOND, 0);
+
+        if(data == null)
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+                    curTime.getTimeInMillis(),   24 * 60 * 60 * 1000, pendingIntent[insertNum]);
+        else
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+                    curTime.getTimeInMillis(),   24 * 60 * 60 * 1000, pendingIntent[data.get_id()]);
     }
+
 
     private void showPermissionsDialog() {
         if (Build.VERSION.SDK_INT == 23) {

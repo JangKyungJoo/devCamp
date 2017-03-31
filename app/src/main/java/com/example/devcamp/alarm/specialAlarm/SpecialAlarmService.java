@@ -62,7 +62,7 @@ public class SpecialAlarmService extends Service {
 //        cancelAlarm();
 
         // 알람 진행 요일 확인
-        boolean[] week_repeat = {};
+        boolean[] week_repeat = {false, false, false, false, false, false, false};
 
         int len = week.length;
         for (int i = 0; i < len; i++)
@@ -80,7 +80,7 @@ public class SpecialAlarmService extends Service {
             PendingIntent pending = getPendingIntent();
             triggerTime = setTriggerTime();
 
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, triggerTime, intervalTime, pending);
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, triggerTime, 10000, pending);
         }
 
     }
@@ -106,9 +106,9 @@ public class SpecialAlarmService extends Service {
         Calendar curTime = Calendar.getInstance();
 
         curTime.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);   // 요일
-        curTime.set(Calendar.HOUR_OF_DAY, 16);                  // 시간
-        curTime.set(Calendar.MINUTE, 45);                       // 분
-        curTime.set(Calendar.SECOND, 0);                        // 초
+        curTime.set(Calendar.HOUR_OF_DAY, 17);                  // 시간
+        curTime.set(Calendar.MINUTE, 54);                       // 분
+        curTime.set(Calendar.SECOND, 30);                       // 초
         curTime.set(Calendar.MILLISECOND, 0);                   // 세부 초
 
         long btime = curTime.getTimeInMillis();

@@ -8,8 +8,9 @@ import java.io.Serializable;
 
 public class Alarm implements Serializable {
 
-    public Alarm(int _id, String time, boolean sunday , boolean monday, boolean tuesday, boolean wednesday, boolean thursday, boolean friday, boolean saturday , boolean cancel, String memo, String ringtone) {
+    public Alarm(int _id, String type, String time, boolean sunday , boolean monday, boolean tuesday, boolean wednesday, boolean thursday, boolean friday, boolean saturday , boolean cancel, String memo, String ringtone, String ringtone_url) {
         this._id = _id;
+        this.type = type;
         this.time = time;
         this.sunday = sunday;
         this.monday = monday;
@@ -21,9 +22,27 @@ public class Alarm implements Serializable {
         this.cancel = cancel;
         this.memo = memo;
         this.ringtone = ringtone;
+        this.ringtone_url = ringtone_url;
+    }
+
+    public Alarm(String type, String time, boolean monday, boolean tuesday, boolean wednesday, boolean thursday, boolean friday, boolean saturday, boolean sunday, String memo, String ringtone, String ringtone_url) {
+        this.type = type;
+        this.time = time;
+        this.monday = monday;
+        this.tuesday = tuesday;
+        this.wednesday = wednesday;
+        this.thursday = thursday;
+        this.friday = friday;
+        this.saturday = saturday;
+        this.sunday = sunday;
+        this.cancel = cancel;
+        this.memo = memo;
+        this.ringtone = ringtone;
+        this.ringtone_url = ringtone_url;
     }
 
     private int _id;
+    private String type;
     private String time;
     private boolean monday = false;
     private boolean tuesday = false;
@@ -35,6 +54,25 @@ public class Alarm implements Serializable {
     private boolean cancel = false;
     private String memo;
     private String ringtone;
+    private String ringtone_url;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getRingtone_url() {
+        return ringtone_url;
+    }
+
+    public void setRingtone_url(String ringtone_url) {
+        this.ringtone_url = ringtone_url;
+    }
+
+
 
 
     public int get_id() {
