@@ -280,14 +280,14 @@ public class AlarmUpdateActivity extends AppCompatActivity {
                 else
                     row.put("memo", "");
                 row.put("ringtone", ringtoneString);
-                if(ringtone_url.toString() != null)
+                if(ringtone_url != null)
                     row.put("ringtone_url", ringtone_url.toString());
                 else
                     row.put("ringtone_url", "");
 
 
                 if(updateFlag == INSERT) {
-                    Toast.makeText(AlarmUpdateActivity.this, hour + " : " + minute, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(AlarmUpdateActivity.this, hour + " : " + minute, Toast.LENGTH_SHORT).show();
                     db.insert(AlarmDBHelper.TABLE_NAME, null, row);
                     insertNum++;
 
@@ -317,18 +317,7 @@ public class AlarmUpdateActivity extends AppCompatActivity {
 
     public void onClick(View v) {
 
-        Intent intent = new Intent();
-        intent.setAction("com.example.devcamp.alarm.AlarmReceiver"); //리시버 등록
 
-        if(data == null){
-            Log.d("insert position", "" + insertNum);
-            pendingIntent[insertNum]
-                    = PendingIntent.getBroadcast(this, insertNum, intent, FLAG_UPDATE_CURRENT);
-        }
-        else{
-            pendingIntent[data.get_id()]
-                    = PendingIntent.getBroadcast(this, data.get_id(), intent, FLAG_UPDATE_CURRENT);
-        }
 
 
 
@@ -406,11 +395,11 @@ public class AlarmUpdateActivity extends AppCompatActivity {
             case R.id.alarmWayButton:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (Settings.System.canWrite(this)) {
-                        Toast.makeText(this, "onCreate: Already Granted", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(this, "onCreate: Already Granted", Toast.LENGTH_SHORT).show();
                         Intent i = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
                         startActivityForResult(i, 0);
                     } else {
-                        Toast.makeText(this, "onCreate: Not Granted. Permission Requested", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(this, "onCreate: Not Granted. Permission Requested", Toast.LENGTH_SHORT).show();
 //                        Intent i = new Intent(android.provider.Settings.ACTION_MANAGE_WRITE_SETTINGS);
 //                        intent.setData(Uri.parse("package:" + this.getPackageName()));
 //                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -418,7 +407,7 @@ public class AlarmUpdateActivity extends AppCompatActivity {
                         showPermissionsDialog();
                     }
                 } else {
-                    Toast.makeText(this, "onCreate: Already Granted (jellybean) ", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(this, "onCreate: Already Granted (jellybean) ", Toast.LENGTH_SHORT).show();
                     Intent i = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
                     startActivityForResult(i, 0);
                 }
@@ -468,15 +457,28 @@ public class AlarmUpdateActivity extends AppCompatActivity {
         super.onResume();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (Settings.System.canWrite(this)) {
-                Toast.makeText(this, "onResume: Granted", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "onResume: Granted", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
 
     public void forday(int week) {
-        String memo;
+
         Intent intent = new Intent();
+        intent.setAction("com.example.devcamp.alarm.AlarmReceiver"); //리시버 등록
+
+        if(data == null){
+            Log.d("insert position", "" + insertNum);
+            pendingIntent[insertNum]
+                    = PendingIntent.getBroadcast(this, insertNum, intent, FLAG_UPDATE_CURRENT);
+        }
+        else{
+            pendingIntent[data.get_id()]
+                    = PendingIntent.getBroadcast(this, data.get_id(), intent, FLAG_UPDATE_CURRENT);
+        }
+
+        String memo;
         intent.putExtra("url", ringtone_url.toString());
 
         if (alarmMemo.getText().toString().isEmpty()) {
@@ -500,6 +502,7 @@ public class AlarmUpdateActivity extends AppCompatActivity {
             minute = mTime.getCurrentMinute();
         }
 
+        Log.d("alarm time", "jo");
         Calendar curTime = Calendar.getInstance();
 //        curTime.set(Calendar.YEAR, curTime.get(Calendar.YEAR));
 //        curTime.set(Calendar.MONTH, curTime.get(Calendar.MONTH));
@@ -510,12 +513,13 @@ public class AlarmUpdateActivity extends AppCompatActivity {
         curTime.set(Calendar.SECOND, 0);
         curTime.set(Calendar.MILLISECOND, 0);
 
+        Log.d("insert", "insert number "  + insertNum);
         if(data == null)
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
-                    curTime.getTimeInMillis(),   24 * 60 * 60 * 1000, pendingIntent[insertNum]);
+                    curTime.getTimeInMillis(), 24 * 60 * 60 * 1000, pendingIntent[insertNum]);
         else
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
-                    curTime.getTimeInMillis(),   24 * 60 * 60 * 1000, pendingIntent[data.get_id()]);
+                    curTime.getTimeInMillis(),  24 * 60 * 60 * 1000, pendingIntent[data.get_id()]);
     }
 
 
