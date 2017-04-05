@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:orientation="vertical">
+
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -12,355 +13,182 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:text="피부 관리 가이드"
-            android:textStyle="bold"
             android:textSize="@dimen/activity_title_text_size"
-            android:layout_gravity="center"/>
+            android:textStyle="bold" />
 
     </FrameLayout>
 
-    <FrameLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/item_guide_height"
-        android:background="@color/colorAccent"
-        android:padding="4dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/setting_text_group_size"
-            android:layout_marginLeft="@dimen/icon_setting_group_margin"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:layout_gravity="center"
-            android:text="복합성"/>
-
-    </FrameLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="4dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/setting_text_group_size"
-            android:layout_margin="@dimen/icon_setting_group_margin"
-            android:textStyle="bold"
-            android:textColor="@color/colorPrimaryDark"
-            android:text="복합성이란?"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/setting_text_group_size"
-            android:layout_margin="@dimen/icon_setting_group_margin"
-            android:textStyle="bold"
-            android:textColor="@color/colorPrimaryDark"
-            android:text="일반적으로 T존 (이마, 코)은 피지분비가 많은 지성 타입이고,"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/icon_setting_group_margin"
-            android:textSize="@dimen/setting_text_group_size"
-            android:textStyle="bold"
-            android:textColor="@color/colorPrimaryDark"
-            android:text="U존 (볼, 턱)은 컨성 타입으로 얼굴에 두 가지 피부 타입이 공존"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/setting_text_group_size"
-            android:layout_margin="@dimen/icon_setting_group_margin"
-            android:textStyle="bold"
-            android:textColor="@color/colorPrimaryDark"
-            android:text="한다."/>
-
-    </LinearLayout>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/item_guide_height"
-        android:background="@color/colorAccent"
-        android:padding="4dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/setting_text_group_size"
-            android:layout_marginLeft="@dimen/icon_setting_group_margin"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:layout_gravity="center"
-            android:text="복합성 전용 체크리스트"/>
-
-    </FrameLayout>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="330dp">
+        android:layout_height="0dp"
+        android:layout_weight="8"
+        android:background="@android:color/white"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="12dp"
-            android:layout_gravity="left">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <FrameLayout
-                android:layout_width="130dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/shape_rounded_corner"
-                android:layout_marginBottom="12dp">
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_guide_height"
+                android:background="@color/colorAccent"
+                android:padding="4dp">
 
                 <TextView
+                    android:id="@+id/guideDetail_tag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/setting_text_group_size"
                     android:layout_gravity="center"
-                    android:layout_margin="@dimen/icon_setting_group_margin"
-                    android:textStyle="bold"
+                    android:layout_marginLeft="@dimen/icon_setting_group_margin"
+                    android:text="복합성"
                     android:textColor="@android:color/white"
-                    android:text="CLEANSING"/>
+                    android:textSize="@dimen/setting_text_group_size"
+                    android:textStyle="bold" />
 
             </FrameLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="@dimen/dialog_icon_size"
-                    android:layout_height="@dimen/dialog_icon_size"
-                    android:src="@mipmap/icon_guide_checkbox_true"
-                    android:layout_gravity="bottom"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/setting_text_group_size"
-                    android:textStyle="bold"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:layout_marginLeft="2dp"
-                    android:text="자극이 적은 클렌징하기"/>
-
-                <ImageView
-                    android:layout_width="@dimen/icon_guide_size"
-                    android:layout_height="@dimen/icon_guide_size"
-                    android:layout_marginLeft="2dp"
-                    android:src="@mipmap/icon_guide_question"/>
-
-            </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="@dimen/dialog_icon_size"
-                    android:layout_height="@dimen/dialog_icon_size"
-                    android:src="@mipmap/icon_guide_checkbox_true"/>
+                android:orientation="vertical"
+                android:padding="4dp">
 
                 <TextView
+                    android:id="@+id/guideDetail_question"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/setting_text_group_size"
-                    android:textStyle="bold"
+                    android:layout_margin="@dimen/icon_setting_group_margin"
                     android:textColor="@color/colorPrimaryDark"
-                    android:layout_marginLeft="2dp"
-                    android:text="U존과 T존을 구분하여 클렌징"/>
-
-                <ImageView
-                    android:layout_width="@dimen/icon_guide_size"
-                    android:layout_height="@dimen/icon_guide_size"
-                    android:layout_marginLeft="2dp"
-                    android:src="@mipmap/icon_guide_question"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="@dimen/dialog_icon_size"
-                    android:layout_height="@dimen/dialog_icon_size"
-                    android:src="@mipmap/icon_guide_checkbox_true"/>
+                    android:textSize="@dimen/setting_text_group_size"
+                    android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/guideDetail_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/setting_text_group_size"
-                    android:textStyle="bold"
+                    android:layout_margin="@dimen/icon_setting_group_margin"
+                    android:maxLines="3"
+                    android:text="일반적으로 T존 (이마, 코)은 피지분비가 많은 지성 타입이고,"
                     android:textColor="@color/colorPrimaryDark"
-                    android:layout_marginLeft="2dp"
-                    android:text="립 앤 아이 리무버 사용"/>
-
-                <ImageView
-                    android:layout_width="@dimen/icon_guide_size"
-                    android:layout_height="@dimen/icon_guide_size"
-                    android:layout_marginLeft="2dp"
-                    android:src="@mipmap/icon_guide_question"/>
+                    android:textSize="@dimen/setting_text_group_size"
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
             <FrameLayout
-                android:layout_width="130dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/shape_rounded_corner"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="12dp">
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_guide_height"
+                android:background="@color/colorAccent"
+                android:padding="4dp">
 
                 <TextView
+                    android:id="@+id/guideDetail_checkListTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/setting_text_group_size"
-                    android:layout_margin="@dimen/icon_setting_group_margin"
-                    android:textStyle="bold"
                     android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/icon_setting_group_margin"
+                    android:text="복합성 전용 체크리스트"
                     android:textColor="@android:color/white"
-                    android:text="SKIN CARE"/>
+                    android:textSize="@dimen/setting_text_group_size"
+                    android:textStyle="bold" />
 
             </FrameLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:orientation="horizontal">
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="330dp">
 
-                <ImageView
-                    android:layout_width="@dimen/dialog_icon_size"
-                    android:layout_height="@dimen/dialog_icon_size"
-                    android:src="@mipmap/icon_guide_checkbox_true"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/setting_text_group_size"
-                    android:textStyle="bold"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:layout_marginLeft="2dp"
-                    android:text="토너로 꼭 정리해주기"/>
+                    android:layout_gravity="left"
+                    android:orientation="vertical"
+                    android:padding="12dp">
 
-                <ImageView
-                    android:layout_width="@dimen/icon_guide_size"
-                    android:layout_marginLeft="2dp"
-                    android:layout_height="@dimen/icon_guide_size"
-                    android:src="@mipmap/icon_guide_question"/>
+                    <FrameLayout
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:background="@drawable/shape_rounded_corner">
 
-            </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_margin="@dimen/icon_setting_group_margin"
+                            android:text="CLEANSING"
+                            android:textColor="@android:color/white"
+                            android:textSize="@dimen/setting_text_group_size"
+                            android:textStyle="bold" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:orientation="horizontal">
+                    </FrameLayout>
 
-                <ImageView
-                    android:layout_width="@dimen/dialog_icon_size"
-                    android:layout_height="@dimen/dialog_icon_size"
-                    android:src="@mipmap/icon_guide_checkbox_true"/>
+                    <ListView
+                        android:id="@+id/cleansingListView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:divider="@color/white"
+                        android:listSelector="@android:color/white"
+                        android:dividerHeight="0dp"
+                        android:focusable="false">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/setting_text_group_size"
-                    android:textStyle="bold"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:layout_marginLeft="2dp"
-                    android:text="로션 꼭 사용하기 (유수분 밸런스)"/>
+                    </ListView>
 
-                <ImageView
-                    android:layout_width="@dimen/icon_guide_size"
-                    android:layout_height="@dimen/icon_guide_size"
-                    android:layout_marginLeft="2dp"
-                    android:src="@mipmap/icon_guide_question"/>
+                    <FrameLayout
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/shape_rounded_corner">
 
-            </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_margin="@dimen/icon_setting_group_margin"
+                            android:text="SKIN CARE"
+                            android:textColor="@android:color/white"
+                            android:textSize="@dimen/setting_text_group_size"
+                            android:textStyle="bold" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:orientation="horizontal">
+                    </FrameLayout>
 
-                <ImageView
-                    android:layout_width="@dimen/dialog_icon_size"
-                    android:layout_height="@dimen/dialog_icon_size"
-                    android:src="@mipmap/icon_guide_checkbox_true"/>
+                    <ListView
+                        android:id="@+id/skincareListView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:divider="@color/white"
+                        android:listSelector="@android:color/white"
+                        android:dividerHeight="0dp"
+                        android:focusable="false">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/setting_text_group_size"
-                    android:textStyle="bold"
-                    android:layout_marginLeft="2dp"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:text="모공 관리 제품 사용"/>
+                    </ListView>
+                </LinearLayout>
 
-                <ImageView
-                    android:layout_width="@dimen/icon_guide_size"
-                    android:layout_height="@dimen/icon_guide_size"
-                    android:layout_marginLeft="2dp"
-                    android:src="@mipmap/icon_guide_question"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="@dimen/dialog_icon_size"
-                    android:layout_height="@dimen/dialog_icon_size"
-                    android:src="@mipmap/icon_guide_checkbox_true"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/setting_text_group_size"
-                    android:textStyle="bold"
-                    android:layout_marginLeft="2dp"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:text="건조한 부분에만 보습 크림 덧바르기"/>
-
-                <ImageView
-                    android:layout_width="@dimen/icon_guide_size"
-                    android:layout_height="@dimen/icon_guide_size"
-                    android:layout_marginLeft="2dp"
-                    android:src="@mipmap/icon_guide_question"/>
-
-            </LinearLayout>
-
+            </FrameLayout>
         </LinearLayout>
-
-    </FrameLayout>
+    </ScrollView>
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/colorPrimary">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/colorPrimary"
+        android:id="@+id/applyBtn">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:text="적용하기"
-            android:textStyle="bold"
+            android:textColor="@color/white"
             android:textSize="@dimen/activity_title_text_size"
-            android:layout_gravity="center"/>
+            android:textStyle="bold" />
 
     </FrameLayout>
 

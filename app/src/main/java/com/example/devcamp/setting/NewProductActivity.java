@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class DdayActivity extends Activity {
+public class NewProductActivity extends Activity {
     private int tYear;           //오늘 연월일 변수
     private int tMonth;
     private int tDay;
@@ -39,7 +39,7 @@ public class DdayActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dday);
+        setContentView(R.layout.activity_new_product);
 
         // ArrayAdapter를 통해 LIST로 표시할 오브젝트를 지정한다.
         // 여기서는 심플하게 그냥 String
@@ -53,7 +53,7 @@ public class DdayActivity extends Activity {
 
         long now = System.currentTimeMillis();
         Date date = new Date(now);
-        ArrayList<Special> ddayArr = Special.load(getApplicationContext(), date.getYear() + "." + date.getMonth() + "." + date.getDay(), Special.DDAY_NAME);
+        ArrayList<Special> ddayArr = Special.load(getApplicationContext(), date.getYear() + "." + date.getMonth() + "." + date.getDay(), Special.NEWPRODUCT_NAME);
 
         // 아이템을 추가
         /*adapter.addItem(ContextCompat.getDrawable(this, R.drawable.specialday_icon_01_edit), "두근두근 소개팅", "2017/08/30", "D-20") ;
@@ -107,7 +107,7 @@ public class DdayActivity extends Activity {
                 // TODO 아이템 클릭시에 구현할 내용은 여기에.
                 //String item = (String) listView.getItemAtPosition(position).toString();
                 TextView listText = (TextView)view.findViewById(R.id.dday_title);
-                Intent intent = new Intent(DdayActivity.this, DdayModifyActivity.class);
+                Intent intent = new Intent(NewProductActivity.this, NewProductModifyActivity.class);
                 intent.putExtra("item",listText.getText().toString());
                 startActivity(intent);
                 //Toast.makeText(DdayActivity.this, item, Toast.LENGTH_LONG).show();
@@ -116,7 +116,7 @@ public class DdayActivity extends Activity {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent addDday = new Intent(DdayActivity.this, DdaySettingActivity.class);
+                Intent addDday = new Intent(NewProductActivity.this, NewProductSettingActivity.class);
                 startActivity(addDday);
                 finish();
             }
@@ -131,7 +131,7 @@ public class DdayActivity extends Activity {
                 // TODO 아이템 선택시에 구현할 내용은 여기에.
                 String item = (String) listView.getSelectedItem();
 
-                Toast.makeText(DdayActivity.this, item, Toast.LENGTH_LONG).show();
+                Toast.makeText(NewProductActivity.this, item, Toast.LENGTH_LONG).show();
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {

@@ -43,8 +43,9 @@ public class DateCellView extends BaseCellView {
         textView.setText(day.getText());
         getUserData();
         setMonthDayText();
-        if(isToday())
+        if(isToday()) {
             this.findViewById(R.id.today).setVisibility(VISIBLE);
+        }
     }
 
     private void initLayout() {

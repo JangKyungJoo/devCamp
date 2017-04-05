@@ -14,9 +14,8 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity" />
-        <activity
-            android:name=".SplashActivity"
+        <activity android:name=".MainActivity"/>
+        <activity android:name=".SplashActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,6 +23,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".setting.SettingActivity" />
         <activity android:name=".guide.GuideActivity" />
         <activity android:name=".guide.GuideDetailActivity" />
@@ -37,6 +37,7 @@
         <activity android:name=".setting.DdayActivity" />
         <activity android:name=".setting.SkincareActivity" />
         <activity android:name=".setting.SpecialDayActivity" />
+        <activity android:name=".setting.DdayModifyActivity" />
         <activity android:name=".alarm.AlarmUpdateActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

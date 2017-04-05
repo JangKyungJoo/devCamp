@@ -16,7 +16,7 @@ import com.example.devcamp.util.Special;
 
 import java.util.Calendar;
 
-public class DdaySettingActivity extends Activity {
+public class NewProductSettingActivity extends Activity {
     /** Called when the activity is first created. */
 
     private TextView ddayText;
@@ -47,7 +47,7 @@ public class DdaySettingActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dday_setting);
+        setContentView(R.layout.activity_new_product_setting);
 
         ddayText=(TextView)findViewById(R.id.dday);
         editText=(EditText) findViewById(R.id.editText4);
@@ -58,9 +58,9 @@ public class DdaySettingActivity extends Activity {
         saveButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Special.saveSpecialName(getApplicationContext(), Special.DDAY_NAME, editText.getText().toString(), String.valueOf(d));
+                Special.saveSpecialName(getApplicationContext(), Special.NEWPRODUCT_NAME, editText.getText().toString(), String.valueOf(d));
                 //System.out.println("edit:"+editText.getText().toString());
-                Intent backadd = new Intent(DdaySettingActivity.this, DdayActivity.class);
+                Intent backadd = new Intent(NewProductSettingActivity.this, NewProductActivity.class);
                 startActivity(backadd);
                 finish();
             }

@@ -1,11 +1,15 @@
 package com.example.devcamp.alarm.specialAlarm;
 
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
+import static android.content.Context.NOTIFICATION_SERVICE;
+
 public class SpecialAlarmReceiver extends BroadcastReceiver {
+    private NotificationManager nm = null;
     public SpecialAlarmReceiver() {
     }
 
@@ -17,10 +21,7 @@ public class SpecialAlarmReceiver extends BroadcastReceiver {
         SpecialToast toast = new SpecialToast(context);
         toast.showToast("메인제목","서브제목", Toast.LENGTH_SHORT);
 
-        throw new UnsupportedOperationException("Not yet implemented");
-
-
-
+        nm = (NotificationManager)context.getSystemService(NOTIFICATION_SERVICE);
 
     }
 }
