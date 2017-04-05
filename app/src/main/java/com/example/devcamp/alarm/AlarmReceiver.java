@@ -18,7 +18,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Toast.makeText(context, "Alarm!!!", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, "Alarm!!!", Toast.LENGTH_SHORT).show();
 
         NotificationManager notificationmanager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
@@ -35,7 +35,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             alarmSound = Uri.parse(uri);
         }
 
-        if(memo.isEmpty())
+        if(memo == null)
             memo = "씻고 오셨나요?";
 
         Notification noti = new Notification.Builder(context)

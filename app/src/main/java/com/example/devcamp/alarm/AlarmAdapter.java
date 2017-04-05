@@ -137,34 +137,36 @@ public class AlarmAdapter extends BaseAdapter {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
+
+                Log.d("alarm adapter", "position : "  + myData.get(position).get_id());
                 if(!isChecked){
-                    pendingIntent[myData.get(position).get_id()].cancel();
+//                    pendingIntent[myData.get(position).get_id()-1].cancel();
                     Log.d("cancel", " not checked");
                 }
                 else{
 
-                    Log.d("cancel", " checked");
-                    if (myData.get(position).isMonday()) {
-                        forday(2, position);
-                    }
-                    if (myData.get(position).isTuesday()) {
-                        forday(3, position);
-                    }
-                    if (myData.get(position).isWednesday()) {
-                        forday(4, position);
-                    }
-                    if (myData.get(position).isThursday()) {
-                        forday(5, position);
-                    }
-                    if (myData.get(position).isFriday()) {
-                        forday(6, position);
-                    }
-                    if (myData.get(position).isSaturday()) {
-                        forday(7,position);
-                    }
-                    if (myData.get(position).isSunday()) {
-                        forday(1, position);
-                    }
+//                    Log.d("cancel", " checked");
+//                    if (myData.get(position).isMonday()) {
+//                        forday(2, position);
+//                    }
+//                    if (myData.get(position).isTuesday()) {
+//                        forday(3, position);
+//                    }
+//                    if (myData.get(position).isWednesday()) {
+//                        forday(4, position);
+//                    }
+//                    if (myData.get(position).isThursday()) {
+//                        forday(5, position);
+//                    }
+//                    if (myData.get(position).isFriday()) {
+//                        forday(6, position);
+//                    }
+//                    if (myData.get(position).isSaturday()) {
+//                        forday(7,position);
+//                    }
+//                    if (myData.get(position).isSunday()) {
+//                        forday(1, position);
+//                    }
 
 
                 }
@@ -187,7 +189,7 @@ public class AlarmAdapter extends BaseAdapter {
 
         //intent 설정 변경 , FLAG_ONE_SHOT 일회성 인텐트
         pendingIntent[myData.get(pos).get_id()]
-                = PendingIntent.getBroadcast(context, 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                = PendingIntent.getBroadcast(context, myData.get(pos).get_id(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
         Calendar curTime = Calendar.getInstance();
